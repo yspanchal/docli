@@ -1,8 +1,10 @@
 
-l# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
+import os
 import logging
 import requests
+import ConfigParser
 
 
 class DigitalOcean(object):
@@ -13,16 +15,23 @@ class DigitalOcean(object):
 	api_url = "https://api.digitalocean.com/v2/"
 
 	@classmethod
-	def do_request(self, token, method, url, params=None, headers=None, proxy=None):
+	def do_request(self, method, url, token=None, params=None, headers=None, proxy=None):
 
-		if not token:
+		auth_token = token
+
+		if not auth_token:
+			config = ConfigParser.ConfigParser()
+			config.read(os.path.expanduser('~/.do.cfg'))
+			auth_token = config.get('docli', 'auth_token') or os.getenv('do_auth_token')
+
+		if not auth_token:
 			data = {'has_error':True, 'error_message':'Authentication token not provided.'}
 			return data
 
 		if headers:
-			headers.update({'Authorization': 'Bearer ' + token})
+			headers.update({'Authorization': 'Bearer ' + auth_token})
 		else:
-			headers = {'Authorization': 'Bearer ' + token}
+			headers = {'Authorization': 'Bearer ' + auth_token}
 
 		if proxy:
 			proxy = proxy.split(',')
