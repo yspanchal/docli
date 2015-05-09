@@ -6,6 +6,9 @@ import logging
 import requests
 import ConfigParser
 
+import click
+from tabulate import tabulate
+
 
 class DigitalOcean(object):
 	"""
@@ -60,3 +63,33 @@ class DigitalOcean(object):
 			data.update({'has_error':True, 'error_message':msg})
 
 		return data
+
+
+def print_table(data_dict={}, tablefmt='fancy_grid'):
+
+	"""
+	returns colored table output
+	"""
+	headers = []
+	table = []
+
+	if not data_dict:
+		return click.echo('Invalid data !!!')
+
+	if data_dict['headers']:
+		headers = data_dict['headers']
+
+		if not isinstance(headers, list):
+			return click.echo('Invalid headers !!!')
+
+		headers = [click.style(str(each_element), bold=True, fg='red') for each_element in headers]
+
+	if data_dict['table_data']:
+		table_data = data_dict['table_data']
+
+		if not all(isinstance(each_list, list) for each_list in table_data):
+			return click.echo("Invlaid table data !!!")
+
+		table = [[click.style(str(each_element), fg='green') for each_element in each_list] for each_list in table_data]
+
+	return click.echo(tabulate(table, headers, tablefmt="fancy_grid"))
