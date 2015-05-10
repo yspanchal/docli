@@ -9,6 +9,7 @@ import ConfigParser
 import click
 from tabulate import tabulate
 
+requests.packages.urllib3.disable_warnings()
 
 class DigitalOcean(object):
 	"""
@@ -18,9 +19,12 @@ class DigitalOcean(object):
 	api_url = "https://api.digitalocean.com/v2/"
 
 	@classmethod
-	def do_request(self, method, url, token=None, params=None, headers=None, proxy=None):
+	def do_request(self, method, url, *args, **kwargs):
 
-		auth_token = token
+		auth_token = kwargs.get('token', None)
+		params = kwargs.get('params', None)
+		headers = kwargs.get('headers', None)
+		proxy = kwargs.get('proxy', None)
 
 		if not auth_token:
 			config = ConfigParser.ConfigParser()
@@ -37,7 +41,7 @@ class DigitalOcean(object):
 			headers = {'Authorization': 'Bearer ' + auth_token}
 
 		if proxy:
-			proxy = proxy.split(',')
+			proxy = {'http': proxy}
 
 		request_method = {'GET':requests.get, 'POST': requests.post, 'PUT': requests.put, 'DELETE': requests.delete}
 
@@ -92,4 +96,4 @@ def print_table(data_dict={}, tablefmt='fancy_grid'):
 
 		table = [[click.style(str(each_element), fg='green') for each_element in each_list] for each_list in table_data]
 
-	return click.echo(tabulate(table, headers, tablefmt="fancy_grid"))
+	return click.echo(tabulate(table, headers, tablefmt=tablefmt))
