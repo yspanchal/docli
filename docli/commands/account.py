@@ -23,7 +23,7 @@ def account():
 
 @account.command()
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
-@click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format',  metavar='<format>')
+@click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 def info(token, tablefmt, proxy):
 	"""
@@ -37,4 +37,4 @@ def info(token, tablefmt, proxy):
 	for key in result['account'].keys():
 		table.append([key, result['account'][key]])
 	data = {'headers': headers, 'table_data': table}
-	print_table(data, tablefmt)
+	print_table(tablefmt, data)

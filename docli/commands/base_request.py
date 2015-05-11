@@ -69,7 +69,7 @@ class DigitalOcean(object):
 		return data
 
 
-def print_table(data_dict={}, tablefmt='fancy_grid'):
+def print_table(tablefmt, data_dict={}):
 
 	"""
 	returns colored table output
