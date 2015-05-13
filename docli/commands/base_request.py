@@ -97,3 +97,6 @@ def print_table(tablefmt, data_dict={}):
 		table = [[click.style(str(each_element), fg='green') for each_element in each_list] for each_list in table_data]
 
 	return click.echo(tabulate(table, headers, tablefmt=tablefmt))
+
+
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
