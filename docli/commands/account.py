@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import click
-from base_request import DigitalOcean, print_table
+from base_request import DigitalOcean, print_table, CONTEXT_SETTINGS
 
 from urls import ACCOUNT_INFO
-
 
 @click.group()
 def account_group():
@@ -14,14 +13,14 @@ def account_group():
 	pass
 
 
-@account_group.group()
+@account_group.group(context_settings=CONTEXT_SETTINGS)
 def account():
 	"""
 	manage digital ocean account
 	"""
 
 
-@account.command()
+@account.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
