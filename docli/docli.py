@@ -2,10 +2,12 @@
 
 import click
 from commands.account import account_group
+from commands.actions import actions_group
 from commands.base_request import CONTEXT_SETTINGS
 
 import os
 
+sources_list = [account_group, actions_group]
 
 def config_file(file):
 	"""
@@ -19,7 +21,7 @@ def config_file(file):
 	click.echo("configuration completed.")
 
 
-@click.command(cls=click.CommandCollection, sources=[account_group], context_settings=CONTEXT_SETTINGS, invoke_without_command=True, no_args_is_help=True)
+@click.command(cls=click.CommandCollection, sources=sources_list, context_settings=CONTEXT_SETTINGS, invoke_without_command=True, no_args_is_help=True)
 @click.option('-c', '--configure', is_flag=True, help='configure digital ocean access token')
 def docli(configure):
 	"""
