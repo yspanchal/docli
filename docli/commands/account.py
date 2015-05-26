@@ -31,9 +31,13 @@ def info(token, tablefmt, proxy):
 	method = 'GET'
 	url = ACCOUNT_INFO
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
-	headers = ['Fields', 'Values']
-	table = []
-	for key in result['account'].keys():
-		table.append([key, result['account'][key]])
-	data = {'headers': headers, 'table_data': table}
-	print_table(tablefmt, data)
+	if result['has_error']:
+		click.echo()
+		click.echo(result['error_message'])
+	else:
+		headers = ['Fields', 'Values']
+		table = []
+		for key in result['account'].keys():
+			table.append([key, result['account'][key]])
+		data = {'headers': headers, 'table_data': table}
+		print_table(tablefmt, data)
