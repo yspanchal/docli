@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import click
-from base_request import DigitalOcean, print_table, CONTEXT_SETTINGS
-from main import *
-
 from urls import ACTION_LIST
+from click.core import Context
+from base_request import DigitalOcean, print_table, CONTEXT_SETTINGS
+
 
 @click.group()
 def actions_group():
@@ -20,17 +20,22 @@ def invoke_list(token, proxy, page=1):
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
 	return result
 
+
 @actions_group.command(context_settings=CONTEXT_SETTINGS)
-@click.option('--list', '-l', is_flag=True, help='list all actions')
+@click.option('--getlist', '-l', is_flag=True, help='list all actions')
 @click.option('--getid', '-i', help='get specific actions by id', type=int, metavar='<action_id>')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
-def action(list, getid, token, proxy, tablefmt):
+def action(getlist, getid, token, proxy, tablefmt):
 	"""
 	Actions are records of events that have occurred on the resources
 	"""
-	if list:
+	if not getlist and not getid:
+		ctx = Context(action)
+		click.echo(ctx.get_help())
+
+	if getlist:
 		page = 1
 		has_page = True
 		while has_page:
