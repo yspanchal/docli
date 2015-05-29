@@ -27,9 +27,12 @@ class DigitalOcean(object):
 		proxy = kwargs.get('proxy', None)
 
 		if not auth_token:
-			config = ConfigParser.ConfigParser()
-			config.read(os.path.expanduser('~/.do.cfg'))
-			auth_token = config.get('docli', 'auth_token') or os.getenv('do_auth_token')
+			try:
+				config = ConfigParser.ConfigParser()
+				config.read(os.path.expanduser('~/.do.cfg'))
+				auth_token = config.get('docli', 'auth_token') or os.getenv('do_auth_token')
+			except:
+				auth_token = None
 
 		if not auth_token:
 			data = {'has_error':True, 'error_message':'Authentication token not provided.'}
