@@ -13,18 +13,11 @@ def account_group():
 	pass
 
 
-@account_group.group(context_settings=CONTEXT_SETTINGS)
-def account():
-	"""
-	manage digital ocean account
-	"""
-
-
-@account.command(context_settings=CONTEXT_SETTINGS)
+@account_group.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
-def info(token, tablefmt, proxy):
+def account(token, tablefmt, proxy):
 	"""
 	get digital ocean account info
 	"""
