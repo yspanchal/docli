@@ -28,9 +28,10 @@ def account(token, tablefmt, proxy):
 		click.echo()
 		click.echo(result['error_message'])
 	else:
+		record = 'account'
 		headers = ['Fields', 'Values']
 		table = []
 		for key in result['account'].keys():
 			table.append([key, result['account'][key]])
 		data = {'headers': headers, 'table_data': table}
-		print_table(tablefmt, data)
+		print_table(tablefmt, data, record)

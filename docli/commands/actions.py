@@ -45,11 +45,12 @@ def action(getlist, getid, token, proxy, tablefmt):
 				click.echo(result['error_message'])
 				has_page = False
 			else:
+				record = 'action'
 				headers = ['Fields', 'Values']
 				for dic in result['actions']:
 					table = [['Id', dic['id']], ['Status', dic['status']], ['Type', click.style(dic['type'], fg='blue')], ['Started at', dic['started_at']], ['Completed at', dic['completed_at']], ['Resource id', dic['resource_id']], ['Resource type', dic['resource_type']], ['Region', dic['region']['name']], ['Size', dic['region']['sizes'][0]]]
 					data = {'headers': headers, 'table_data': table}
-					print_table(tablefmt, data)
+					print_table(tablefmt, data, record)
 				total = 'Total results: %d' % (result['meta']['total'])
 				click.echo()
 				click.echo(total)
@@ -70,8 +71,9 @@ def action(getlist, getid, token, proxy, tablefmt):
 			click.echo(result['error_message'])
 			has_page = False
 		else:
+			record = 'action'
 			headers = ['Fields', 'Values']
 			dic = result['action']
 			table = [['Id', dic['id']], ['Status', dic['status']], ['Type', click.style(dic['type'], fg='blue')], ['Started at', dic['started_at']], ['Completed at', dic['completed_at']], ['Resource id', dic['resource_id']], ['Resource type', dic['resource_type']], ['Region', dic['region']['name']], ['Size', dic['region']['sizes'][0]]]
 			data = {'headers': headers, 'table_data': table}
-			print_table(tablefmt, data)
+			print_table(tablefmt, data, record)

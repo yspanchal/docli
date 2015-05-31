@@ -75,7 +75,7 @@ class DigitalOcean(object):
 		return data
 
 
-def print_table(tablefmt, data_dict={}):
+def print_table(tablefmt, data_dict={}, record=None):
 
 	"""
 	returns colored table output
@@ -102,7 +102,9 @@ def print_table(tablefmt, data_dict={}):
 
 		table = [[click.style(str(each_element), fg='green') for each_element in each_list] for each_list in table_data]
 
-	return click.echo(tabulate(table, headers, tablefmt=tablefmt))
+		return click.echo(tabulate(table, headers, tablefmt=tablefmt))
+	click.echo()
+	return click.echo("No records found for %s" % record)
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
