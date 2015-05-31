@@ -3,11 +3,12 @@
 import click
 from commands.account import account_group
 from commands.actions import actions_group
+from commands.domain import domain_group
 from commands.base_request import CONTEXT_SETTINGS
 
 import os
 
-sources_list = [account_group, actions_group]
+sources_list = [account_group, actions_group, domain_group]
 
 def config_file(file):
 	"""
