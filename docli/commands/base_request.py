@@ -104,7 +104,7 @@ def print_table(tablefmt, data_dict={}, record=None):
 
 		return click.echo(tabulate(table, headers, tablefmt=tablefmt))
 	click.echo()
-	return click.echo("No records found for %s" % record)
+	return click.echo("No %s records found for your account" % record)
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
