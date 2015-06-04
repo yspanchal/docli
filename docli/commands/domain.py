@@ -20,14 +20,32 @@ def validate(dic):
 	if dic['create'] and dic['detail']:
 		raise click.UsageError('Invalid option combination --create cannot be used with --detail')
 
+	if dic['create'] and dic['delete']:
+		raise click.UsageError('Invalid option combination --create cannot be used with --delete')
+
 	if dic['getlist'] and dic['detail']:
 		raise click.UsageError('Invalid option combination --getlist cannot be used with --detail')
+
+	if dic['getlist'] and dic['delete']:
+		raise click.UsageError('Invalid option combination --getlist cannot be used with --delete')
 
 	if dic['getlist'] and dic['name']:
 		raise click.UsageError('Invalid option combination --getlist cannot be used with --name')
 
 	if dic['getlist'] and dic['ip']:
 		raise click.UsageError('Invalid option combination --getlist cannot be used with --ip')
+
+	if dic['name'] and dic['detail']:
+		raise click.UsageError('Invalid option combination --name or -n cannot be used with --detail')
+
+	if dic['ip'] and dic['detail']:
+		raise click.UsageError('Invalid option combination --ip or -i cannot be used with --detail')
+
+	if dic['name'] and dic['delete']:
+		raise click.UsageError('Invalid option combination --name or -n cannot be used with --delete')
+
+	if dic['ip'] and dic['delete']:
+		raise click.UsageError('Invalid option combination --ip or -i cannot be used with --delete')
 
 	if dic['create'] and dic['ip'] and not dic['name']:
 		raise click.UsageError('--name or -n domain name missing')
@@ -41,12 +59,6 @@ def validate(dic):
 	if dic['ip'] and not dic['create']:
 		raise click.UsageError('--create or -c domain create option missing')
 
-	if dic['name'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --name or -n cannot be used with --detail')
-
-	if dic['ip'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --ip or -i cannot be used with --detail')
-
 	return True
 
 
@@ -56,11 +68,12 @@ def validate(dic):
 @click.option('--name', '-n', type=str, help='domain name entry', metavar='<example.com>')
 @click.option('--ip', '-i', type=str, help='ip address for domain', metavar='<1.2.3.4>')
 @click.option('--detail', '-d', type=str, help='get details of existing domain name', metavar='<example.com>')
+@click.option('--delete', '-r', type=str, help='delete existing domain name', metavar='<example.com>')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail):
+def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail, delete):
 	"""
 	Domains that you are managing through the DigitalOcean DNS interface.
 	"""
@@ -106,3 +119,14 @@ def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail):
 				click.echo("name: %s" %(result['domain']['name']))
 				click.echo("ttl: %s" %(result['domain']['ttl']))
 				click.echo("zone file: %s" %(result['domain']['zone_file']))
+
+		if delete:
+			method = 'DELETE'
+			url = DOMAIN_LIST + delete
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				click.echo()
+				click.echo("Domain %s deleted" %(delete))
