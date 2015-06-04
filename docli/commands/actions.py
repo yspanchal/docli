@@ -42,7 +42,7 @@ def action(getlist, getid, token, proxy, tablefmt):
 			result = invoke_list(token, proxy, page)
 			if result['has_error']:
 				click.echo()
-				click.echo(result['error_message'])
+				click.echo('Error: %s' %(result['error_message']))
 				has_page = False
 			else:
 				record = 'action'
@@ -68,7 +68,7 @@ def action(getlist, getid, token, proxy, tablefmt):
 		result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
 		if result['has_error']:
 			click.echo()
-			click.echo(result['error_message'])
+			click.echo('Error: %s' %(result['error_message']))
 			has_page = False
 		else:
 			record = 'action'

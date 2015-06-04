@@ -26,7 +26,7 @@ def account(token, tablefmt, proxy):
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
 	if result['has_error']:
 		click.echo()
-		click.echo(result['error_message'])
+		click.echo('Error: %s' %(result['error_message']))
 	else:
 		record = 'account'
 		headers = ['Fields', 'Values']
