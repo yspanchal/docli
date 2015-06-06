@@ -77,6 +77,9 @@ def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail, delet
 	"""
 	Domains that you are managing through the DigitalOcean DNS interface.
 	"""
+	if not ctx.params['getlist'] and not ctx.params['create'] and not ctx.params['name'] and not ctx.params['ip'] and not ctx.params['detail'] and not ctx.params['delete']:
+		click.echo(ctx.get_help())
+
 	if validate(ctx.params):
 		if getlist:
 			method = 'GET'
