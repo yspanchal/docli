@@ -110,3 +110,14 @@ def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, updat
 				table = [['Id', result['domain_record']['id']], ['Type', result['domain_record']['type']], ['Name', result['domain_record']['name']], ['Data', result['domain_record']['data']], ['Priority', result['domain_record']['priority']], ['Port', result['domain_record']['port']], ['Weight', result['domain_record']['weight']]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)
+
+		if delete:
+			method = 'DELETE'
+			url = DOMAIN_LIST + delete + '/records/' + recordid
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				click.echo()
+				click.echo("Domain %s record id %s deleted" %(delete, recordid))
