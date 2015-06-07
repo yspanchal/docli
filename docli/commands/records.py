@@ -20,7 +20,6 @@ def validate(dic):
 @record_group.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--getlist', '-l', type=str, help='list all domain records', metavar='<example.com>')
 @click.option('--create', '-c', type=str, help='create new domain record', metavar='<example.com>')
-@click.option('--detail', '-d', type=str, help='get details of existing domain record', metavar='<example.com>')
 @click.option('--delete', '-r', type=str, help='delete existing domain record', metavar='<example.com>')
 @click.option('--update', '-u', type=str, help='update existing domain record', metavar='<example.com>')
 @click.option('--type', '-y', type=str, help='The record type (A, MX, CNAME, etc)', metavar='<type>')
@@ -29,15 +28,16 @@ def validate(dic):
 @click.option('--priority', '-x', type=int, help='The priority of the host', default='null', metavar='<priority>')
 @click.option('--port', '-P', type=int, help='The port that the service is accessible on', default='null', metavar='<port>')
 @click.option('--weight', '-g', type=int, help='The weight of records with the same priority', default='null', metavar='<weight>'))
+@click.option('--recordid', '-i', type=str, help='The record id to be updated', metavar='<3352896>')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def record(ctx, token, tablefmt, proxy, getlist, create, detail, delete, update, type, name, data, priority, port, weight):
+def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, update, type, name, data, priority, port, weight):
 	"""
 	Individual DNS records configured for a domain.
 	"""
-	if not ctx.params['getlist'] and not ctx.params['create'] and not ctx.params['detail'] and not ctx.params['delete'] and not ctx.params['update']:
+	if not ctx.params['getlist'] and not ctx.params['create'] and not ctx.params['delete'] and not ctx.params['update']:
 		click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -70,6 +70,41 @@ def record(ctx, token, tablefmt, proxy, getlist, create, detail, delete, update,
 			else:
 				click.echo()
 				click.echo("Domain record added for ", create)
+				click.echo()
+				headers = ['Fields', 'Values']
+				table = [['Id', result['domain_record']['id']], ['Type', result['domain_record']['type']], ['Name', result['domain_record']['name']], ['Data', result['domain_record']['data']], ['Priority', result['domain_record']['priority']], ['Port', result['domain_record']['port']], ['Weight', result['domain_record']['weight']]]
+				data = {'headers': headers, 'table_data': table}
+				print_table(tablefmt, data, record)
+
+		if update:
+			method = 'PUT'
+			url = DOMAIN_LIST + update + '/records/' + recordid
+			params = {}
+			if name:
+				params.update({'name': name})
+
+			if type:
+				params.update({'type': type})
+
+			if data:
+				params.update({'data': data})
+
+			if priority:
+				params.update({'priority': priority})
+
+			if port:
+				params.update({'port': port})
+
+			if weight:
+				params.update({'weight': weight})
+
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				click.echo()
+				click.echo("Domain record updated for ", update)
 				click.echo()
 				headers = ['Fields', 'Values']
 				table = [['Id', result['domain_record']['id']], ['Type', result['domain_record']['type']], ['Name', result['domain_record']['name']], ['Data', result['domain_record']['data']], ['Priority', result['domain_record']['priority']], ['Port', result['domain_record']['port']], ['Weight', result['domain_record']['weight']]]
