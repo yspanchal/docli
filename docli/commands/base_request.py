@@ -54,8 +54,9 @@ class DigitalOcean(object):
 
 		try:
 			res = req(request_url, headers=headers, params=params,  proxies=proxy)
-		except (ConnectionError, RequestException) as e:
-			click.echo(e.message)
+		except (requests.exceptions.ConnectionError, requests.exceptions.RequestException) as e:
+			data = {'has_error':True, 'error_message':e.message}
+			return data
 
 		if res.status_code == 204:
 			data = {'has_error':False, 'error_message':''}
