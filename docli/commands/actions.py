@@ -33,7 +33,7 @@ def action(getlist, getid, token, proxy, tablefmt):
 	"""
 	if not getlist and not getid:
 		ctx = Context(action)
-		click.echo(ctx.get_help())
+		return click.echo(ctx.get_help())
 
 	if getlist:
 		page = 1
