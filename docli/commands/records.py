@@ -92,7 +92,7 @@ def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, updat
 				click.echo()
 				click.echo('Error: %s' %(result['error_message']))
 			else:
-				record = 'action'
+				record = 'domain record'
 				headers = ['Fields', 'Values']
 				for dic in result['domain_records']:
 					table = [['Id', dic['id']], ['Type', dic['type']], ['Name', dic['name']], ['Data', dic['data']], ['Priority', dic['priority']], ['Port', dic['port']], ['Weight', dic['weight']]]
@@ -121,11 +121,12 @@ def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, updat
 			else:
 				params.update({'weight':weight})
 
-			# result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
 			if result['has_error']:
 				click.echo()
 				click.echo('Error: %s' %(result['error_message']))
 			else:
+				record = 'domain record'
 				click.echo()
 				click.echo("Domain record added for ", create)
 				click.echo()
@@ -156,11 +157,12 @@ def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, updat
 			if not weight == 0:
 				params.update({'weight': weight})
 
-			# result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
 			if result['has_error']:
 				click.echo()
 				click.echo('Error: %s' %(result['error_message']))
 			else:
+				record = 'domain record'
 				click.echo()
 				click.echo("Domain record updated for ", update)
 				click.echo()
@@ -172,7 +174,7 @@ def record(ctx, token, tablefmt, proxy, getlist, create, recordid, delete, updat
 		if delete:
 			method = 'DELETE'
 			url = DOMAIN_LIST + delete + '/records/' + recordid
-			# result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
 			if result['has_error']:
 				click.echo()
 				click.echo('Error: %s' %(result['error_message']))
