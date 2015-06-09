@@ -36,7 +36,7 @@ def validate(dic):
 			break
 
 		if dic['delete'] and dic[option]:
-			raise click.UsageError('Invalid option combination --delete cannot be used with %s' % option)
+			raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
 			break
 
 	option_list = ['type', 'name', 'data']
