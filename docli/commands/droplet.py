@@ -32,6 +32,7 @@ def invoke_list(token, proxy, url):
 @click.option('--snapshot', '-C', type=int, help='List all snapshots for a droplet', metavar='<3812352>')
 @click.option('--listbackup', '-B', type=int, help='List all backups for a droplet', metavar='<3812352>')
 @click.option('--action', '-a', type=int, help='List all actions for a droplet', metavar='<3812352>')
+@click.option('--delete', '-d', type=int, help='Delete a droplet', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
 @click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=str, help='The size that you wish to select for this Droplet.', metavar='<1gb>')
@@ -45,11 +46,11 @@ def invoke_list(token, proxy, url):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
+def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action, delete, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['listbackup'] and not ctx.params['action'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
+	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['listbackup'] and not ctx.params['action'] and not ctx.params['delete'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -275,3 +276,14 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 							has_page = False
 					else:
 						has_page = False
+
+		if delete:
+			method = 'DELETE'
+			url = DROPLETS + str(delete)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				click.echo()
+				click.echo("Droplet id %d deleted" % (delete)
