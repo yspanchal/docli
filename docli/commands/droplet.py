@@ -44,7 +44,7 @@ def droplet(ctx, create, getlist, name, region, size, image, sshkeys, backup, ip
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if not ctx.params['create'] and not ctx.params['name'] and ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']:
+	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
