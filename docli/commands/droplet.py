@@ -27,6 +27,7 @@ def invoke_list(token, proxy, page=1):
 @droplet_group.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--create', '-c', is_flag=True, help='create new droplet')
 @click.option('--getlist', '-l', is_flag=True, help='get list of all droplets')
+@click.option('--retrieve', '-R', type=int, help='retrieve an existing Droplet by id', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
 @click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=str, help='The size that you wish to select for this Droplet.', metavar='<1gb>')
@@ -40,11 +41,11 @@ def invoke_list(token, proxy, page=1):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def droplet(ctx, create, getlist, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
+def droplet(ctx, create, getlist, retrieve, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
+	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -107,3 +108,42 @@ def droplet(ctx, create, getlist, name, region, size, image, sshkeys, backup, ip
 							has_page = False
 					else:
 						has_page = False
+
+		if retrieve:
+			method = 'GET'
+			url = DROPLETS + str(retrieve)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'retrieve droplet'
+				headers = ['Fields', 'Values']
+				droplet_id = result['droplet']['id']
+				name = result['droplet']['name']
+				memory = result['droplet']['memory']
+				vcpus = result['droplet']['vcpus']
+				disk = result['droplet']['disk']
+				locked = result['droplet']['locked']
+				status = result['droplet']['status']
+				kernel_id = result['droplet']['kernel']['id']
+				kernel_name = result['droplet']['kernel']['name']
+				kernel_version = result['droplet']['kernel']['version']
+				created_at = result['droplet']['created_at']
+				features = result['droplet']['features']
+				backup_ids = result['droplet']['backup_ids']
+				snapshot_ids = result['droplet']['snapshot_ids']
+				if result['droplet']['networks']['v4']:
+					network_v4 = result['droplet']['networks']['v4'][0]['ip_address']
+				else:
+					network_v4 = None
+
+				if result['droplet']['networks']['v6']:
+					network_v6 = result['droplet']['networks']['v6'][0]['ip_address']
+				else:
+					network_v6 = None
+				region = result['droplet']['region']['name']
+				available = result['droplet']['region']['available']
+				table = [['Id', droplet_id],['Name', name],['Memory', memory],['Vcpus', vcpus],['Disk', disk],['Locked', locked],['Status', status],['Kernel Id', kernel_id],['Kernel Name', kernel_name],['Kernel Version', kernel_version],['Created At', created_at],['Features', features],['Backup Id', backup_ids],['SnapShot Id', snapshot_ids],['Network V4', network_v4],['Network V6', network_v6],['Region', region],['Available', available]]
+				data = {'headers': headers, 'table_data': table}
+				print_table(tablefmt, data, record)
