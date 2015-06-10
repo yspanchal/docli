@@ -17,9 +17,9 @@ def validate(dic):
 	return True
 
 
-def invoke_list(token, proxy, page=1):
+def invoke_list(token, proxy, url):
 	method = 'GET'
-	url = DROPLETS + '?page=%d' % (page)
+	url = url
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
 	return result
 
@@ -28,6 +28,7 @@ def invoke_list(token, proxy, page=1):
 @click.option('--create', '-c', is_flag=True, help='create new droplet')
 @click.option('--getlist', '-l', is_flag=True, help='get list of all droplets')
 @click.option('--retrieve', '-R', type=int, help='retrieve an existing Droplet by id', metavar='<3812352>')
+@click.option('--kernel', '-k', type=int, help='List all available kernels for a droplet', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
 @click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=str, help='The size that you wish to select for this Droplet.', metavar='<1gb>')
@@ -41,11 +42,11 @@ def invoke_list(token, proxy, page=1):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def droplet(ctx, create, getlist, retrieve, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
+def droplet(ctx, create, getlist, retrieve, kernel, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
+	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -71,7 +72,8 @@ def droplet(ctx, create, getlist, retrieve, name, region, size, image, sshkeys, 
 			page = 1
 			has_page = True
 			while has_page:
-				result = invoke_list(token, proxy, page)
+				url = DROPLETS + '?page=%d' % (page)
+				result = invoke_list(token, proxy, url)
 				if result['has_error']:
 					click.echo()
 					click.echo('Error: %s' %(result['error_message']))
@@ -147,3 +149,34 @@ def droplet(ctx, create, getlist, retrieve, name, region, size, image, sshkeys, 
 				table = [['Id', droplet_id],['Name', name],['Memory', memory],['Vcpus', vcpus],['Disk', disk],['Locked', locked],['Status', status],['Kernel Id', kernel_id],['Kernel Name', kernel_name],['Kernel Version', kernel_version],['Created At', created_at],['Features', features],['Backup Id', backup_ids],['SnapShot Id', snapshot_ids],['Network V4', network_v4],['Network V6', network_v6],['Region', region],['Available', available]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)
+
+		if kernel:
+			page = 1
+			has_page = True
+			while has_page:
+				url = DROPLETS + str(kernel) + '/kernels?page=%d' % (page)
+				result = invoke_list(token, proxy, url)
+				if result['has_error']:
+					click.echo()
+					click.echo('Error: %s' %(result['error_message']))
+				else:
+					record = "droplet kernel"
+					headers = ['Kernel Id', 'Kernel Name', 'Kernel Version']
+					table = []
+					for dic in result['kernels']:
+						table_list = [dic['id'], dic['name'], dic['version']]
+						table.append(table_list)
+					data = {'headers': headers, 'table_data': table}
+					print_table(tablefmt, data, record)
+					total = 'Total kernels: %d' % (result['meta']['total'])
+					click.echo(total)
+					if result['links'].has_key('pages'):
+						if result['links']['pages'].has_key('next'):
+							page += 1
+							value = click.prompt('Do you want to continue ?', type=str, default='n')
+							if value.lower() != 'y':
+								has_page = False
+						else:
+							has_page = False
+					else:
+						has_page = False
