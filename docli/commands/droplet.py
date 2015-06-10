@@ -31,6 +31,7 @@ def invoke_list(token, proxy, url):
 @click.option('--kernel', '-k', type=int, help='List all available kernels for a droplet', metavar='<3812352>')
 @click.option('--snapshot', '-C', type=int, help='List all snapshots for a droplet', metavar='<3812352>')
 @click.option('--listbackup', '-B', type=int, help='List all backups for a droplet', metavar='<3812352>')
+@click.option('--action', '-a', type=int, help='List all actions for a droplet', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
 @click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=str, help='The size that you wish to select for this Droplet.', metavar='<1gb>')
@@ -44,11 +45,11 @@ def invoke_list(token, proxy, url):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
+def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action, name, region, size, image, sshkeys, backup, ipv6, private_networking, user_data, token, tablefmt, proxy):
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['listbackup'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
+	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['listbackup'] and not ctx.params['action'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -219,7 +220,7 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, name, 
 			page = 1
 			has_page = True
 			while has_page:
-				url = DROPLETS + str(backup) + '/backups?page=%d' % (page)
+				url = DROPLETS + str(listbackup) + '/backups?page=%d' % (page)
 				result = invoke_list(token, proxy, url)
 				if result['has_error']:
 					has_page = False
@@ -233,6 +234,36 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, name, 
 						data = {'headers': headers, 'table_data': table}
 						print_table(tablefmt, data, record)
 					total = 'Total backups: %d' % (result['meta']['total'])
+					click.echo(total)
+					if result['links'].has_key('pages'):
+						if result['links']['pages'].has_key('next'):
+							page += 1
+							value = click.prompt('Do you want to continue ?', type=str, default='n')
+							if value.lower() != 'y':
+								has_page = False
+						else:
+							has_page = False
+					else:
+						has_page = False
+
+		if action:
+			page = 1
+			has_page = True
+			while has_page:
+				url = DROPLETS + str(action) + '/actions?page=%d' % (page)
+				result = invoke_list(token, proxy, url)
+				if result['has_error']:
+					has_page = False
+					click.echo()
+					click.echo('Error: %s' %(result['error_message']))
+				else:
+					record = "droplet action"
+					headers = ['Fields', 'Values']
+					for dic in result['actions']:
+						table = [['Id', dic['id']], ['Status', dic['status']], ['Type', dic['type']], ['Started At', dic['started_at']], ['Completed At', dic['completed_at']]]
+						data = {'headers': headers, 'table_data': table}
+						print_table(tablefmt, data, record)
+					total = 'Total actions: %d' % (result['meta']['total'])
 					click.echo(total)
 					if result['links'].has_key('pages'):
 						if result['links']['pages'].has_key('next'):
