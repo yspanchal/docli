@@ -35,7 +35,7 @@ def invoke_list(token, proxy, url):
 @click.option('--delete', '-d', type=int, help='Delete a droplet', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
 @click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
-@click.option('--size', '-s', type=str, help='The size that you wish to select for this Droplet.', metavar='<1gb>')
+@click.option('--size', '-s', type=click.Choice(['512mb', '1gb', '2gb', '4gb', '8gb', '16gb', '32gb', '48gb', '64gb']), help='The size that you wish to select for this Droplet.', metavar='<1gb>')
 @click.option('--image', '-i', type=str, help='The image ID of a public or private image.', metavar='<ubuntu-14-04-x64>')
 @click.option('--sshkeys', '-S', type=str, help='Comma seperated IDs of the SSH keys to embed in the Droplet', nargs=10, metavar='<home, office>')
 @click.option('--backup', '-b', is_flag=True, help='A boolean indicating whether automated backups should be enabled.', default=False)
@@ -286,4 +286,4 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 				click.echo('Error: %s' %(result['error_message']))
 			else:
 				click.echo()
-				click.echo("Droplet id %d deleted" % (delete)
+				click.echo("Droplet id %d deleted" % (delete))
