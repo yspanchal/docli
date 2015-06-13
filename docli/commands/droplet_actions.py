@@ -48,3 +48,21 @@ def droplet_actions(ctx, disable_backups, reboot):
 				click.echo()
 				click.echo('To get status update of above action execute following command.')
 				click.echo('Command: docli action -i %d' % disable_backups)
+
+		if reboot:
+			method = 'POST'
+			url = DROPLETS + str(reboot) + '/actions'
+			params = {'type':'reboot'}
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'droplet reboot'
+				headers = ['Fields', 'Values']
+				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
+				data = {'headers': headers, 'table_data': table}
+				print_table(tablefmt, data, record)
+				click.echo()
+				click.echo('To get status update of above action execute following command.')
+				click.echo('Command: docli action -i %d' % reboot)
