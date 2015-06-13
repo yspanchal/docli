@@ -66,8 +66,11 @@ def validate(dic):
 					raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
 					break
 
-		if dic['create'] and (not dic['name'] or not dic['region'] or not dic['size'] or not dic['image']):
-			raise click.UsageError('name, region, size and image option is required for --create')
+	if dic['create'] and (not dic['name'] or not dic['region'] or not dic['size'] or not dic['image']):
+		raise click.UsageError('name, region, size and image option is required for --create')
+
+	if (dic['name'] or dic['region'] or dic['size'] or dic['image']) and not dic['create']:
+		raise click.UsageError('--create is required')
 
 	return True
 
