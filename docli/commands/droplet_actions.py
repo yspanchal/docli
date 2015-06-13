@@ -17,6 +17,23 @@ def validate(dic):
 	return True
 
 
+def run_command(droplet_id, params, record):
+	method = 'POST'
+	url = DROPLETS + str(droplet_id) + '/actions'
+	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+	if result['has_error']:
+		click.echo()
+		click.echo('Error: %s' %(result['error_message']))
+	else:
+		headers = ['Fields', 'Values']
+		table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
+		data = {'headers': headers, 'table_data': table}
+		print_table(tablefmt, data, record)
+		click.echo()
+		click.echo('To get status update of above action execute following command.')
+		click.echo('Command: docli action -i %d' % droplet_id)
+
+
 @droplet_actions_group.command(name='droplet-actions', context_settings=CONTEXT_SETTINGS)
 @click.option('--disable-backups', '-d', type=int, help='Disable backups for given droplet id', metavar='<3812352>')
 @click.option('--reboot', '-r', type=int, help='Reboot droplet for given droplet id', metavar='<3812352>')
@@ -41,181 +58,51 @@ def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_o
 
 	if validate(ctx.params):
 		if disable_backups:
-			method = 'POST'
-			url = DROPLETS + str(disable_backups) + '/actions'
 			params = {'type':'disable_backups'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet disable backups'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % disable_backups)
+			record = 'droplet disable backups'
+			return run_command(disable_backups, params, record)
 
 		if reboot:
-			method = 'POST'
-			url = DROPLETS + str(reboot) + '/actions'
 			params = {'type':'reboot'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet reboot'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % reboot)
-
+			record = 'droplet reboot'
+			return run_command(reboot, params, record)			
+	
 		if power_cycle:
-			method = 'POST'
-			url = DROPLETS + str(power_cycle) + '/actions'
 			params = {'type':'power_cycle'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet power_cycle'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % power_cycle)
+			record = 'droplet power_cycle'
+			return run_command(power_cycle, params, record)
 
 		if shutdown:
-			method = 'POST'
-			url = DROPLETS + str(shutdown) + '/actions'
 			params = {'type':'shutdown'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet shutdown'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % shutdown)
+			record = 'droplet shutdown'
+			return run_command(shutdown, params, record)
 
 		if power_off:
-			method = 'POST'
-			url = DROPLETS + str(power_off) + '/actions'
 			params = {'type':'power_off'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet power_off'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % power_off)
+			record = 'droplet power_off'
+			return run_command(power_off, params, record)
 
 		if power_on:
-			method = 'POST'
-			url = DROPLETS + str(power_on) + '/actions'
 			params = {'type':'power_on'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet power_on'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % power_on)
+			record = 'droplet power_on'
+			return run_command(power_on, params, record)
 
 		if password_reset:
-			method = 'POST'
-			url = DROPLETS + str(password_reset) + '/actions'
 			params = {'type':'password_reset'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet password_reset'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % password_reset)
+			record = 'droplet password_reset'
+			return run_command(password_reset, params, record)
 
 		if ipv6:
-			method = 'POST'
-			url = DROPLETS + str(ipv6) + '/actions'
 			params = {'type':'enable_ipv6'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet ipv6'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % ipv6)
+			record = 'droplet ipv6'
+			return run_command(ipv6, params, record)
 
 		if private_networking:
-			method = 'POST'
-			url = DROPLETS + str(private_networking) + '/actions'
 			params = {'type':'enable_private_networking'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet private_networking'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % private_networking)
+			record = 'droplet private_networking'
+			return run_command(private_networking, params, record)
 
 		if upgrade:
-			method = 'POST'
-			url = DROPLETS + str(upgrade) + '/actions'
 			params = {'type':'upgrade'}
-			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
-			if result['has_error']:
-				click.echo()
-				click.echo('Error: %s' %(result['error_message']))
-			else:
-				record = 'droplet upgrade'
-				headers = ['Fields', 'Values']
-				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-				click.echo()
-				click.echo('To get status update of above action execute following command.')
-				click.echo('Command: docli action -i %d' % upgrade)
+			record = 'droplet upgrade'
+			return run_command(upgrade, params, record)
