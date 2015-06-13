@@ -27,7 +27,7 @@ def validate(dic):
 @click.option('--power-on', '-o', type=int, help='Power On droplet for given droplet id', metavar='<3812352>')
 @click.option('--password-reset', '-w', type=int, help='Password Reset droplet for given droplet id', metavar='<3812352>')
 @click.pass_context
-def droplet_actions(ctx, disable_backups, reboot, shutdown, power_off, power_on, password_reset):
+def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset):
 	"""
 	Droplet actions are tasks that can be executed on a Droplet.
 	These can be things like rebooting, resizing, snapshotting, etc.
