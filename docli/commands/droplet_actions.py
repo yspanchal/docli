@@ -20,6 +20,7 @@ def validate(dic):
 @droplet_actions_group.command(name='droplet-actions', context_settings=CONTEXT_SETTINGS)
 @click.option('--disable-backups', '-d', type=int, help='Disable backups for given droplet id', metavar='<3812352>')
 @click.option('--reboot', '-r', type=int, help='Reboot droplet for given droplet id', metavar='<3812352>')
+@click.option('--power-cycle', '-p', type=int, help='Power cycle droplet for given droplet id', metavar='<3812352>')
 @click.pass_context
 def droplet_actions(ctx, disable_backups, reboot):
 	"""
@@ -27,7 +28,7 @@ def droplet_actions(ctx, disable_backups, reboot):
 	These can be things like rebooting, resizing, snapshotting, etc.
 	"""
 
-	if (not ctx.params['disable_backups'] and not ctx.params['reboot']):
+	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -66,3 +67,21 @@ def droplet_actions(ctx, disable_backups, reboot):
 				click.echo()
 				click.echo('To get status update of above action execute following command.')
 				click.echo('Command: docli action -i %d' % reboot)
+
+		if power_cycle:
+			method = 'POST'
+			url = DROPLETS + str(power_cycle) + '/actions'
+			params = {'type':'power_cycle'}
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'droplet power_cycle'
+				headers = ['Fields', 'Values']
+				table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
+				data = {'headers': headers, 'table_data': table}
+				print_table(tablefmt, data, record)
+				click.echo()
+				click.echo('To get status update of above action execute following command.')
+				click.echo('Command: docli action -i %d' % power_cycle)
