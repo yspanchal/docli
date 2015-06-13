@@ -14,6 +14,61 @@ def droplet_group():
 
 
 def validate(dic):
+	option_list = ['create','getlist','retrieve','kernel','snapshot','listbackup','action','delete', 'name', 'region', 'size', 'image', 'sshkeys', 'backup', 'ipv6', 'private_networking', 'user_data']
+	create_list = ['name', 'region', 'size', 'image', 'sshkeys', 'backup', 'ipv6', 'private_networking', 'user_data']
+	for option in option_list:
+		if dic['getlist']:
+			if 'getlist' != option:
+				if dic['getlist'] and dic[option]:
+					raise click.UsageError('Invalid option combination --getlist cannot be used with --%s' % option)
+					break
+
+		if dic['create']:
+			if 'create' != option:
+				if option not in create_list:
+					if dic['create'] and dic[option]:
+						raise click.UsageError('Invalid option combination --create cannot be used with --%s' % option)
+						break
+
+		if dic['retrieve']:
+			if 'retrieve' != option:
+				if dic['retrieve'] and dic[option]:
+					raise click.UsageError('Invalid option combination --retrieve cannot be used with --%s' % option)
+					break
+
+		if dic['kernel']:
+			if 'kernel' != option:
+				if dic['kernel'] and dic[option]:
+					raise click.UsageError('Invalid option combination --kernel cannot be used with --%s' % option)
+					break
+
+		if dic['snapshot']:
+			if 'snapshot' != option:
+				if dic['snapshot'] and dic[option]:
+					raise click.UsageError('Invalid option combination --snapshot cannot be used with --%s' % option)
+					break
+
+		if dic['listbackup']:
+			if 'listbackup' != option:
+				if dic['listbackup'] and dic[option]:
+					raise click.UsageError('Invalid option combination --listbackup cannot be used with --%s' % option)
+					break
+
+		if dic['action']:
+			if 'action' != option:
+				if dic['action'] and dic[option]:
+					raise click.UsageError('Invalid option combination --action cannot be used with --%s' % option)
+					break
+
+		if dic['delete']:
+			if 'delete' != option:
+				if dic['delete'] and dic[option]:
+					raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
+					break
+
+		if dic['create'] and (not dic['name'] or not dic['region'] or not dic['size'] or not dic['image']):
+			raise click.UsageError('name, region, size and image option is required for --create')
+
 	return True
 
 
