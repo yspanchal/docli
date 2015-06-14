@@ -58,21 +58,39 @@ def run_command(token, proxy, record, url, tablefmt):
 				has_page = False
 
 
+def image_by_id_slug(token, proxy, record, url, tablefmt):
+	result = invoke_list(token, proxy, url)
+	if result['has_error']:
+		has_page = False
+		click.echo()
+		click.echo('Error: %s' %(result['error_message']))
+	else:
+		headers = ['Fields', 'Values']
+		table = [['Id', result['image']['id']], ['Name', result['image']['name']], ['Distribution', result['image']['distribution']], 
+				['Slug', result['image']['slug']], ['Public', result['image']['public']], ['Created at', result['image']['created_at']]]
+		data = {'headers': headers, 'table_data': table}
+		print_table(tablefmt, data, record)
+
+
 @images_group.command(context_settings=CONTEXT_SETTINGS)
 @click.option('--getlist', '-l', is_flag=True, help='get list of all images')
 @click.option('--distribution', '-d', is_flag=True, help='get list of only distribution images')
 @click.option('--application', '-a', is_flag=True, help='get list of only application images')
 @click.option('--private', '-P', is_flag=True, help='get list of only users private images')
+@click.option('--id', '-I', type=int, help='get image details using image id')
+@click.option('--slug', '-S', type=str, help='get image details using image slug')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def images(ctx, getlist, distribution, application, private, token, tablefmt, proxy):
+def images(ctx, getlist, distribution, application, private, id, slug, token, tablefmt, proxy):
 	"""
 	Images in DigitalOcean may refer to one of a few different kinds of objects.
 	"""
 
-	if (not ctx.params['getlist'] and not ctx.params['distribution'] and not ctx.params['application'] and not ctx.params['private']):
+	if (not ctx.params['getlist'] and not ctx.params['distribution'] 
+		and not ctx.params['application'] and not ctx.params['private'] 
+		and not ctx.params['id'] and not ctx.params['slug']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -95,3 +113,13 @@ def images(ctx, getlist, distribution, application, private, token, tablefmt, pr
 			url = IMAGES + '?private=true'
 			record = 'list private images'
 			return run_command(token, proxy, record, url, tablefmt)
+
+		if id:
+			url = IMAGES + str(id)
+			record = 'image by id'
+			return image_by_id_slug(token, proxy, record, url, tablefmt)
+
+		if slug:
+			url = IMAGES + slug
+			record = 'image by slug'
+			return image_by_id_slug(token, proxy, record, url, tablefmt)
