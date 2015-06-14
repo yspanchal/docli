@@ -17,7 +17,7 @@ def validate(dic):
 	return True
 
 
-def run_command(droplet_id, params, record):
+def run_command(droplet_id, params, record, token, proxy, tablefmt):
 	method = 'POST'
 	url = DROPLETS + str(droplet_id) + '/actions'
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
@@ -61,92 +61,105 @@ def run_command(droplet_id, params, record):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size, rebuild, image, rename, name, change_kernel, kernel, snapshot, sname):
+def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off,
+					power_on, password_reset, ipv6, private_networking, upgrade,
+					restore, backup_id, resize, size, rebuild, image, rename, name,
+					change_kernel, kernel, snapshot, sname, token, tablefmt, proxy):
 	"""
 	Droplet actions are tasks that can be executed on a Droplet.
 	These can be things like rebooting, resizing, snapshotting, etc.
 	"""
 
-	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id'] and not ctx.params['resize'] and not ctx.params['size'] and not ctx.params['rebuild'] and not ctx.params['image'] and not ctx.params['rename'] and not ctx.params['name'] and not ctx.params['change_kernel'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['sname']):
+	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] 
+		and not ctx.params['power_cycle'] and not ctx.params['shutdown'] 
+		and not ctx.params['power_off'] and not ctx.params['power_on'] 
+		and not ctx.params['password_reset'] and not ctx.params['ipv6'] 
+		and not ctx.params['private_networking'] and not ctx.params['upgrade'] 
+		and not ctx.params['restore'] and not ctx.params['backup_id'] 
+		and not ctx.params['resize'] and not ctx.params['size'] 
+		and not ctx.params['rebuild'] and not ctx.params['image'] 
+		and not ctx.params['rename'] and not ctx.params['name'] 
+		and not ctx.params['change_kernel'] and not ctx.params['kernel'] 
+		and not ctx.params['snapshot'] and not ctx.params['sname']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
 		if disable_backups:
 			params = {'type':'disable_backups'}
 			record = 'droplet disable backups'
-			return run_command(disable_backups, params, record)
+			return run_command(disable_backups, params, record, token, proxy, tablefmt)
 
 		if reboot:
 			params = {'type':'reboot'}
 			record = 'droplet reboot'
-			return run_command(reboot, params, record)			
+			return run_command(reboot, params, record, token, proxy, tablefmt)
 	
 		if power_cycle:
 			params = {'type':'power_cycle'}
 			record = 'droplet power_cycle'
-			return run_command(power_cycle, params, record)
+			return run_command(power_cycle, params, record, token, proxy, tablefmt)
 
 		if shutdown:
 			params = {'type':'shutdown'}
 			record = 'droplet shutdown'
-			return run_command(shutdown, params, record)
+			return run_command(shutdown, params, record, token, proxy, tablefmt)
 
 		if power_off:
 			params = {'type':'power_off'}
 			record = 'droplet power_off'
-			return run_command(power_off, params, record)
+			return run_command(power_off, params, record, token, proxy, tablefmt)
 
 		if power_on:
 			params = {'type':'power_on'}
 			record = 'droplet power_on'
-			return run_command(power_on, params, record)
+			return run_command(power_on, params, record, token, proxy, tablefmt)
 
 		if password_reset:
 			params = {'type':'password_reset'}
 			record = 'droplet password_reset'
-			return run_command(password_reset, params, record)
+			return run_command(password_reset, params, record, token, proxy, tablefmt)
 
 		if ipv6:
 			params = {'type':'enable_ipv6'}
 			record = 'droplet ipv6'
-			return run_command(ipv6, params, record)
+			return run_command(ipv6, params, record, token, proxy, tablefmt)
 
 		if private_networking:
 			params = {'type':'enable_private_networking'}
 			record = 'droplet private_networking'
-			return run_command(private_networking, params, record)
+			return run_command(private_networking, params, record, token, proxy, tablefmt)
 
 		if upgrade:
 			params = {'type':'upgrade'}
 			record = 'droplet upgrade'
-			return run_command(upgrade, params, record)
+			return run_command(upgrade, params, record, token, proxy, tablefmt)
 
 		if restore:
 			params = {'type':'restore', 'image':backup_id}
 			record = 'droplet restore'
-			return run_command(restore, params, record)
+			return run_command(restore, params, record, token, proxy, tablefmt)
 
 		if resize:
 			params = {'type':'resize', 'size':size}
 			record = 'droplet resize'
-			return run_command(resize, params, record)
+			return run_command(resize, params, record, token, proxy, tablefmt)
 
 		if rebuild:
 			params = {'type':'rebuild', 'image':image}
 			record = 'droplet rebuild'
-			return run_command(rebuild, params, record)
+			return run_command(rebuild, params, record, token, proxy, tablefmt)
 
 		if rename:
 			params = {'type':'rename', 'name':name}
 			record = 'droplet rename'
-			return run_command(rename, params, record)
+			return run_command(rename, params, record, token, proxy, tablefmt)
 
 		if change_kernel:
 			params = {'type':'change_kernel', 'kernel':kernel}
 			record = 'droplet change_kernel'
-			return run_command(change_kernel, params, record)
+			return run_command(change_kernel, params, record, token, proxy, tablefmt)
 
 		if snapshot:
 			params = {'type':'snapshot', 'name':sname}
 			record = 'droplet snapshot'
-			return run_command(snapshot, params, record)
+			return run_command(snapshot, params, record, token, proxy, tablefmt)
