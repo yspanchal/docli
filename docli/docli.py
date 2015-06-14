@@ -7,11 +7,12 @@ from commands.domain import domain_group
 from commands.records import record_group
 from commands.droplet import droplet_group
 from commands.droplet_actions import droplet_actions_group
+from commands.images import images_group
 from commands.base_request import CONTEXT_SETTINGS
 
 import os
 
-sources_list = [account_group, actions_group, domain_group, record_group, droplet_group, droplet_actions_group]
+sources_list = [account_group, actions_group, domain_group, record_group, droplet_group, droplet_actions_group, images_group]
 
 def config_file(file):
 	"""
