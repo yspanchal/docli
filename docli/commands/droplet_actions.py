@@ -41,7 +41,6 @@ def run_command(droplet_id, params, record):
 @click.option('--shutdown', '-s', type=int, help='Shutdown droplet for given droplet id', metavar='<3812352>')
 @click.option('--power-off', '-P', type=int, help='Power Off droplet for given droplet id', metavar='<3812352>')
 @click.option('--power-on', '-o', type=int, help='Power On droplet for given droplet id', metavar='<3812352>')
-@click.option('--power-on', '-o', type=int, help='Power On droplet for given droplet id', metavar='<3812352>')
 @click.option('--password-reset', '-w', type=int, help='Password Reset droplet for given droplet id', metavar='<3812352>')
 @click.option('--ipv6', '-v', type=int, help='Enable ipv6 for given droplet id', metavar='<3812352>')
 @click.option('--private-networking', '-n', type=int, help='Enable private networking for given droplet id', metavar='<3812352>')
@@ -50,14 +49,16 @@ def run_command(droplet_id, params, record):
 @click.option('--backup-id', '-b', type=int, help='Restore droplet from given backup id', metavar='<1214392>')
 @click.option('--resize', '-z', type=int, help='Resize droplet for given droplet id', metavar='<3812352>')
 @click.option('--size', '-S', type=click.Choice(['512mb', '1gb', '2gb', '4gb', '8gb', '16gb', '32gb', '48gb', '64gb']), help='Resize droplet from given size', metavar='<1214392>')
+@click.option('--rebuild', '-B', type=int, help='Rebuild droplet from image for given droplet id', metavar='<3812352>')
+@click.option('--image', '-i', type=str, help='Rebuild droplet from given image id or slug', metavar='<1214392 or ubuntu-14-04-x64>')
 @click.pass_context
-def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size):
+def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size, rebuild, image):
 	"""
 	Droplet actions are tasks that can be executed on a Droplet.
 	These can be things like rebooting, resizing, snapshotting, etc.
 	"""
 
-	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id'] and not ctx.params['resize'] and not ctx.params['size']):
+	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id'] and not ctx.params['resize'] and not ctx.params['size'] and not ctx.params['rebuild'] and not ctx.params['image']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -120,3 +121,8 @@ def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_o
 			params = {'type':'resize', 'size':size}
 			record = 'droplet resize'
 			return run_command(resize, params, record)
+
+		if rebuild:
+			params = {'type':'rebuild', 'image':image}
+			record = 'droplet rebuild'
+			return run_command(rebuild, params, record)
