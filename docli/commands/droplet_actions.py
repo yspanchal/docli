@@ -37,9 +37,9 @@ def run_command(droplet_id, params, record):
 @droplet_actions_group.command(name='droplet-actions', context_settings=CONTEXT_SETTINGS)
 @click.option('--disable-backups', '-d', type=int, help='Disable backups for given droplet id', metavar='<3812352>')
 @click.option('--reboot', '-r', type=int, help='Reboot droplet for given droplet id', metavar='<3812352>')
-@click.option('--power-cycle', '-p', type=int, help='Power cycle droplet for given droplet id', metavar='<3812352>')
+@click.option('--power-cycle', '-P', type=int, help='Power cycle droplet for given droplet id', metavar='<3812352>')
 @click.option('--shutdown', '-s', type=int, help='Shutdown droplet for given droplet id', metavar='<3812352>')
-@click.option('--power-off', '-P', type=int, help='Power Off droplet for given droplet id', metavar='<3812352>')
+@click.option('--power-off', '-O', type=int, help='Power Off droplet for given droplet id', metavar='<3812352>')
 @click.option('--power-on', '-o', type=int, help='Power On droplet for given droplet id', metavar='<3812352>')
 @click.option('--password-reset', '-w', type=int, help='Password Reset droplet for given droplet id', metavar='<3812352>')
 @click.option('--ipv6', '-v', type=int, help='Enable ipv6 for given droplet id', metavar='<3812352>')
@@ -57,6 +57,9 @@ def run_command(droplet_id, params, record):
 @click.option('--kernel', '-k', type=int, help='Change droplet kernel from given kernel id', metavar='<199>')
 @click.option('--snapshot', '-a', type=int, help='Create snapshot of droplet for given droplet id', metavar='<3812352>')
 @click.option('--sname', '-A', type=str, help='Snapshot name for given droplet', metavar='<example-server>')
+@click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
+@click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
+@click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
 def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size, rebuild, image, rename, name, change_kernel, kernel, snapshot, sname):
 	"""
