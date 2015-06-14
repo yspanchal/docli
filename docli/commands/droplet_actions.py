@@ -46,14 +46,16 @@ def run_command(droplet_id, params, record):
 @click.option('--ipv6', '-v', type=int, help='Enable ipv6 for given droplet id', metavar='<3812352>')
 @click.option('--private-networking', '-n', type=int, help='Enable private networking for given droplet id', metavar='<3812352>')
 @click.option('--upgrade', '-u', type=int, help='Upgrade droplet for given droplet id', metavar='<3812352>')
+@click.option('--restore', '-R', type=int, help='Restore droplet from backup for given droplet id', metavar='<3812352>')
+@click.option('--backup-id', '-b', type=int, help='Restore droplet from given backup id', metavar='<1214392>')
 @click.pass_context
-def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade):
+def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id):
 	"""
 	Droplet actions are tasks that can be executed on a Droplet.
 	These can be things like rebooting, resizing, snapshotting, etc.
 	"""
 
-	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade']):
+	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -106,3 +108,8 @@ def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_o
 			params = {'type':'upgrade'}
 			record = 'droplet upgrade'
 			return run_command(upgrade, params, record)
+
+		if restore:
+			params = {'type':'restore', 'image':backup_id}
+			record = 'droplet restore'
+			return run_command(restore, params, record)
