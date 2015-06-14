@@ -80,18 +80,21 @@ def image_by_id_slug(token, proxy, record, url, tablefmt):
 @click.option('--id', '-I', type=int, help='get image details using image id')
 @click.option('--slug', '-S', type=str, help='get image details using image slug')
 @click.option('--action', '-A', type=int, help='all actions that have been executed on an image')
+@click.option('--update', '-u', type=int, help='update image name for given image id')
+@click.option('--name', '-n', type=str, help='image name to be updated')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def images(ctx, getlist, distribution, application, private, id, slug, action, token, tablefmt, proxy):
+def images(ctx, getlist, distribution, application, private, id, slug, action, update, name, token, tablefmt, proxy):
 	"""
 	Images in DigitalOcean may refer to one of a few different kinds of objects.
 	"""
 
 	if (not ctx.params['getlist'] and not ctx.params['distribution'] 
 		and not ctx.params['application'] and not ctx.params['private'] 
-		and not ctx.params['id'] and not ctx.params['slug'] and not ctx.params['action']):
+		and not ctx.params['id'] and not ctx.params['slug'] and not ctx.params['action'] 
+		and not ctx.params['update'] and not ctx.params['name']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -156,3 +159,22 @@ def images(ctx, getlist, distribution, application, private, id, slug, action, t
 							has_page = False
 					else:
 						has_page = False
+
+		if update:
+			method = 'PUT'
+			url = IMAGES + str(update)
+			params = {"name":name}
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
+			if result['has_error']:
+				has_page = False
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'image update'
+				headers = ['Fields', 'Values']
+				table = [['Id', result['image']['id']], ['Name', result['image']['name']], 
+						['Distribution', result['image']['distribution']], ['Slug', result['image']['slug']], 
+						['Public', result['image']['public']], ['Regions', result['image']['regions']], 
+						['Created at', result['image']['created_at']]]
+				data = {'headers': headers, 'table_data': table}
+				print_table(tablefmt, data, record)
