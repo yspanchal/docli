@@ -52,15 +52,17 @@ def run_command(droplet_id, params, record):
 @click.option('--rebuild', '-B', type=int, help='Rebuild droplet from image for given droplet id', metavar='<3812352>')
 @click.option('--image', '-i', type=str, help='Rebuild droplet from given image id or slug', metavar='<1214392 or ubuntu-14-04-x64>')
 @click.option('--rename', '-n', type=int, help='Rename droplet for given droplet id', metavar='<3812352>')
-@click.option('--name', '-N', type=str, help='Rename droplet from given name', metavar='<example-server')
+@click.option('--name', '-N', type=str, help='Rename droplet from given name', metavar='<example-server>')
+@click.option('--change-kernel', '-c', type=int, help='Change droplet kernel for given droplet id', metavar='<3812352>')
+@click.option('--kernel', '-k', type=int, help='Change droplet kernel from given kernel id', metavar='<199>')
 @click.pass_context
-def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size, rebuild, image, rename, name):
+def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_off, power_on, password_reset, ipv6, private_networking, upgrade, restore, backup_id, resize, size, rebuild, image, rename, name, change_kernel, kernel):
 	"""
 	Droplet actions are tasks that can be executed on a Droplet.
 	These can be things like rebooting, resizing, snapshotting, etc.
 	"""
 
-	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id'] and not ctx.params['resize'] and not ctx.params['size'] and not ctx.params['rebuild'] and not ctx.params['image'] and not ctx.params['rename'] and not ctx.params['name']):
+	if (not ctx.params['disable_backups'] and not ctx.params['reboot'] and not ctx.params['power_cycle'] and not ctx.params['shutdown'] and not ctx.params['power_off'] and not ctx.params['power_on'] and not ctx.params['password_reset'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['upgrade'] and not ctx.params['restore'] and not ctx.params['backup_id'] and not ctx.params['resize'] and not ctx.params['size'] and not ctx.params['rebuild'] and not ctx.params['image'] and not ctx.params['rename'] and not ctx.params['name'] and not ctx.params['change_kernel'] and not ctx.params['kernel']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -133,3 +135,8 @@ def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_o
 			params = {'type':'rename', 'name':name}
 			record = 'droplet rename'
 			return run_command(rename, params, record)
+
+		if change_kernel:
+			params = {'type':'change_kernel', 'kernel':kernel}
+			record = 'droplet change_kernel'
+			return run_command(change_kernel, params, record)
