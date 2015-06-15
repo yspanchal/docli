@@ -82,11 +82,12 @@ def image_by_id_slug(token, proxy, record, url, tablefmt):
 @click.option('--action', '-A', type=int, help='all actions that have been executed on an image')
 @click.option('--update', '-u', type=int, help='update image name for given image id')
 @click.option('--name', '-n', type=str, help='image name to be updated')
+@click.option('--delete', '-D', type=int, help='delete image for given image id')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def images(ctx, getlist, distribution, application, private, id, slug, action, update, name, token, tablefmt, proxy):
+def images(ctx, getlist, distribution, application, private, id, slug, action, update, delete, name, token, tablefmt, proxy):
 	"""
 	Images in DigitalOcean may refer to one of a few different kinds of objects.
 	"""
@@ -94,7 +95,7 @@ def images(ctx, getlist, distribution, application, private, id, slug, action, u
 	if (not ctx.params['getlist'] and not ctx.params['distribution'] 
 		and not ctx.params['application'] and not ctx.params['private'] 
 		and not ctx.params['id'] and not ctx.params['slug'] and not ctx.params['action'] 
-		and not ctx.params['update'] and not ctx.params['name']):
+		and not ctx.params['update'] and not ctx.params['name'] and not ctx.params['delete']):
 		return click.echo(ctx.get_help())
 
 	if validate(ctx.params):
@@ -178,3 +179,15 @@ def images(ctx, getlist, distribution, application, private, id, slug, action, u
 						['Created at', result['image']['created_at']]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)
+
+		if delete:
+			method = 'DELETE'
+			url = IMAGES + str(delete)
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				has_page = False
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				click.echo()
+				click.echo("Image id %d deleted" % (delete))
