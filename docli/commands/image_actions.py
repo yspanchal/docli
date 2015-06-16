@@ -36,11 +36,11 @@ def run_command(token, proxy, image_id, params, record):
 
 
 @image_actions_group.command(name='image-actions', context_settings=CONTEXT_SETTINGS)
-@click.option('--transfer', '-T', type=int, help='transfer given image id to region')
-@click.option('--region', '-r', type=click.Choice(['nyc1', 'nyc2', 'nyc3', 'ams1', 'ams2', 'ams3', 'sfo1', 'sgp1', 'lon1', 'fra1']), help='transfer image to given region')
-@click.option('--convert', '-c', type=int, help='convert given image id')
-@click.option('--action', '-a', type=int, help='get action details for given image id')
-@click.option('--action-id', '-i', type=int, help='get action details from given action id')
+@click.option('--transfer', '-T', type=int, help='transfer given image id to region', metavar='<3812352>')
+@click.option('--region', '-r', type=click.Choice(['nyc1', 'nyc2', 'nyc3', 'ams1', 'ams2', 'ams3', 'sfo1', 'sgp1', 'lon1', 'fra1']), help='transfer image to given region',  metavar='<nyc1>')
+@click.option('--convert', '-c', type=int, help='convert given image id', metavar='<3812352>')
+@click.option('--action', '-a', type=int, help='get action details for given image id', metavar='<3812352>')
+@click.option('--action-id', '-i', type=int, help='get action details from given action id', metavar='<3812352>')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
