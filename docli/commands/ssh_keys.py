@@ -14,6 +14,41 @@ def ssh_keys_group():
 
 
 def validate(dic):
+	option_list = ['getlist', 'create', 'retrieve', 'update', 'delete']
+	for option in option_list:
+		if dic['getlist']:
+			if 'getlist' != option:
+				if dic['getlist'] and dic[option]:
+					raise click.UsageError('Invalid option combination --getlist cannot be used with --%s' % option)
+
+		if dic['create']:
+			if 'create' != option:
+				if dic['create'] and dic[option]:
+					raise click.UsageError('Invalid option combination --create cannot be used with --%s' % option)
+
+		if dic['retrieve']:
+			if 'retrieve' != option:
+				if dic['retrieve'] and dic[option]:
+					raise click.UsageError('Invalid option combination --retrieve cannot be used with --%s' % option)
+
+		if dic['update']:
+			if 'update' != option:
+				if dic['update'] and dic[option]:
+					raise click.UsageError('Invalid option combination --update cannot be used with --%s' % option)
+
+		if dic['delete']:
+			if 'delete' != option:
+				if dic['delete'] and dic[option]:
+					raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
+
+	if (dic['create'] and not dic['name'] and not dic['key'])\
+	or (dic['name'] and not dic['create'] and not dic['key'])\
+	or (dic['key'] and not dic['create'] and not dic['name']):
+		raise click.UsageError('Missing option, --create requires --name and --key option')
+
+	if (dic['update'] and not dic['name'] or not dic['key']):
+		raise click.UsageError('Missing option, --update requires --name or --key option')
+
 	return True
 
 
