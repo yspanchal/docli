@@ -14,6 +14,28 @@ def image_actions_group():
 
 
 def validate(dic):
+	option_list = ['transfer','convert','action']
+	for option in option_list:
+		if dic['transfer']:
+			if 'transfer' != option:
+				if dic['transfer'] and dic[option]:
+					raise click.UsageError('Invalid option combination --transfer cannot be used with --%s' % option)
+
+		if dic['convert']:
+			if 'convert' != option:
+				if dic['convert'] and dic[option]:
+					raise click.UsageError('Invalid option combination --convert cannot be used with --%s' % option)
+
+		if dic['action']:
+			if 'action' != option:
+				if dic['action'] and dic[option]:
+					raise click.UsageError('Invalid option combination --action cannot be used with --%s' % option)
+
+		if (dic['transfer'] and not dic['region']) or (dic['region'] and not dic['transfer']):
+			raise click.UsageError('--transfer option requires --region')
+
+		if (dic['action'] and not dic['action_id']) or (dic['action_id'] and not dic['action']):
+			raise click.UsageError('--action option requires --action-id')
 	return True
 
 
