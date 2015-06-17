@@ -14,8 +14,8 @@ def region_size_group():
 
 
 @region_size_group.command(name='info', context_settings=CONTEXT_SETTINGS)
-@click.option('--region', '-r', is_flag=True, help='get list of all regions')
-@click.option('--size', '-s', is_flag=True, help='get list of droplet sizes')
+@click.option('--region', '-r', is_flag=True, help='get list of available regions')
+@click.option('--size', '-s', is_flag=True, help='get list of available droplet sizes')
 @click.option('--token', '-t', type=str, help='digital ocean authentication token', metavar='<token>')
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
