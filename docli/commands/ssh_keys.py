@@ -13,33 +13,13 @@ def ssh_keys_group():
 	pass
 
 
-def validate(dic):
-	option_list = ['getlist', 'create', 'retrieve', 'update', 'delete']
-	for option in option_list:
-		if dic['getlist']:
-			if 'getlist' != option:
-				if dic['getlist'] and dic[option]:
-					raise click.UsageError('Invalid option combination --getlist cannot be used with --%s' % option)
-
-		if dic['create']:
-			if 'create' != option:
-				if dic['create'] and dic[option]:
-					raise click.UsageError('Invalid option combination --create cannot be used with --%s' % option)
-
-		if dic['retrieve']:
-			if 'retrieve' != option:
-				if dic['retrieve'] and dic[option]:
-					raise click.UsageError('Invalid option combination --retrieve cannot be used with --%s' % option)
-
-		if dic['update']:
-			if 'update' != option:
-				if dic['update'] and dic[option]:
-					raise click.UsageError('Invalid option combination --update cannot be used with --%s' % option)
-
-		if dic['delete']:
-			if 'delete' != option:
-				if dic['delete'] and dic[option]:
-					raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
 
 	if (dic['create'] and not dic['name'] and not dic['key'])\
 	or (dic['name'] and not dic['create'] and not dic['key'])\
@@ -81,7 +61,9 @@ def ssh_keys(ctx, getlist, create, name, key, retrieve, update, delete, token, t
 		and not ctx.params['delete']):
 		return click.echo(ctx.get_help())
 
-	if validate(ctx.params):
+	option_list = ['getlist', 'create', 'retrieve', 'update', 'delete']
+
+	if validate(ctx.params, option_list):
 		if getlist:
 			page = 1
 			has_page = True

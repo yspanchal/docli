@@ -13,65 +13,17 @@ def images_group():
 	pass
 
 
-def validate(dic):
-	option_list = ['getlist', 'distribution', 'application', 'private', 'id', 'slug', 'action', 'update', 'delete']
-	for option in option_list:
-		if dic['getlist']:
-			if 'getlist' != option:
-				if dic['getlist'] and dic[option]:
-					raise click.UsageError('Invalid option combination --getlist cannot be used with --%s' % option)
-					break
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
 
-		if dic['distribution']:
-			if 'distribution' != option:
-				if dic['distribution'] and dic[option]:
-					raise click.UsageError('Invalid option combination --distribution cannot be used with --%s' % option)
-					break
+	if (dic['update'] and not dic['name']) or (dic['name'] and not dic['update']):
+		raise click.UsageError('--update option requires --name')
 
-		if dic['application']:
-			if 'application' != option:
-				if dic['application'] and dic[option]:
-					raise click.UsageError('Invalid option combination --application cannot be used with --%s' % option)
-					break
-
-		if dic['private']:
-			if 'private' != option:
-				if dic['private'] and dic[option]:
-					raise click.UsageError('Invalid option combination --private cannot be used with --%s' % option)
-					break
-
-		if dic['id']:
-			if 'id' != option:
-				if dic['id'] and dic[option]:
-					raise click.UsageError('Invalid option combination --id cannot be used with --%s' % option)
-					break
-
-		if dic['slug']:
-			if 'slug' != option:
-				if dic['slug'] and dic[option]:
-					raise click.UsageError('Invalid option combination --slug cannot be used with --%s' % option)
-					break
-
-		if dic['action']:
-			if 'action' != option:
-				if dic['action'] and dic[option]:
-					raise click.UsageError('Invalid option combination --action cannot be used with --%s' % option)
-					break
-
-		if dic['update']:
-			if 'update' != option:
-				if dic['update'] and dic[option]:
-					raise click.UsageError('Invalid option combination --update cannot be used with --%s' % option)
-					break
-
-		if dic['delete']:
-			if 'delete' != option:
-				if dic['delete'] and dic[option]:
-					raise click.UsageError('Invalid option combination --delete cannot be used with --%s' % option)
-					break
-
-		if (dic['update'] and not dic['name']) or (dic['name'] and not dic['update']):
-			raise click.UsageError('--update option requires --name')
 	return True
 
 
@@ -156,7 +108,9 @@ def images(ctx, getlist, distribution, application, private, id, slug, action, u
 		and not ctx.params['update'] and not ctx.params['name'] and not ctx.params['delete']):
 		return click.echo(ctx.get_help())
 
-	if validate(ctx.params):
+	option_list = ['getlist', 'distribution', 'application', 'private', 'id', 'slug', 'action', 'update', 'delete']
+
+	if validate(ctx.params, option_list):
 		if getlist:
 			url = IMAGES
 			record = 'list images'

@@ -13,142 +13,13 @@ def droplet_actions_group():
 	pass
 
 
-def validate(dic):
-	option_list = ['disable_backups', 'reboot', 'power_cycle', 'shutdown', 'power_off',
-	 'power_on', 'password_reset', 'ipv6', 'private_networking', 'upgrade', 'restore', 
-	 'resize', 'rebuild', 'rename', 'change_kernel', 'snapshot']
-	for option in option_list:
-		if dic['disable_backups']:
-			if 'disable_backups' != option:
-				if dic['disable_backups'] and dic[option]:
-					raise click.UsageError('Invalid option combination --disable-backups cannot be used with --%s' % option)
-					break
-
-		if dic['reboot']:
-			if 'reboot' != option:
-				if dic['reboot'] and dic[option]:
-					raise click.UsageError('Invalid option combination --reboot cannot be used with --%s' % option)
-					break
-
-		if dic['power_cycle']:
-			if 'power_cycle' != option:
-				if dic['power_cycle'] and dic[option]:
-					raise click.UsageError('Invalid option combination --power-cycle cannot be used with --%s' % option)
-					break
-
-		if dic['shutdown']:
-			if 'shutdown' != option:
-				if dic['shutdown'] and dic[option]:
-					raise click.UsageError('Invalid option combination --shutdown cannot be used with --%s' % option)
-					break
-
-		if dic['power_off']:
-			if 'power_off' != option:
-				if dic['power_off'] and dic[option]:
-					raise click.UsageError('Invalid option combination --power-off cannot be used with --%s' % option)
-					break
-
-		if dic['power_on']:
-			if 'power_on' != option:
-				if dic['power_on'] and dic[option]:
-					raise click.UsageError('Invalid option combination --power-on cannot be used with --%s' % option)
-					break
-
-		if dic['password_reset']:
-			if 'password_reset' != option:
-				if dic['password_reset'] and dic[option]:
-					raise click.UsageError('Invalid option combination --password-reset cannot be used with --%s' % option)
-					break
-
-		if dic['ipv6']:
-			if 'ipv6' != option:
-				if dic['ipv6'] and dic[option]:
-					raise click.UsageError('Invalid option combination --ipv6 cannot be used with --%s' % option)
-					break
-
-		if dic['private_networking']:
-			if 'private_networking' != option:
-				if dic['private_networking'] and dic[option]:
-					raise click.UsageError('Invalid option combination --private-networking cannot be used with --%s' % option)
-					break
-
-		if dic['upgrade']:
-			if 'upgrade' != option:
-				if dic['upgrade'] and dic[option]:
-					raise click.UsageError('Invalid option combination --upgrade cannot be used with --%s' % option)
-					break
-
-		if dic['restore']:
-			if 'restore' != option:
-				if dic['restore'] and dic[option]:
-					raise click.UsageError('Invalid option combination --restore cannot be used with --%s' % option)
-					break
-
-		if dic['resize']:
-			if 'resize' != option:
-				if dic['resize'] and dic[option]:
-					raise click.UsageError('Invalid option combination --resize cannot be used with --%s' % option)
-					break
-
-		if dic['rebuild']:
-			if 'rebuild' != option:
-				if dic['rebuild'] and dic[option]:
-					raise click.UsageError('Invalid option combination --rebuild cannot be used with --%s' % option)
-					break
-
-		if dic['rename']:
-			if 'rename' != option:
-				if dic['rename'] and dic[option]:
-					raise click.UsageError('Invalid option combination --rename cannot be used with --%s' % option)
-					break
-
-		if dic['change_kernel']:
-			if 'change_kernel' != option:
-				if dic['change_kernel'] and dic[option]:
-					raise click.UsageError('Invalid option combination --change-kernel cannot be used with --%s' % option)
-					break
-
-		if dic['snapshot']:
-			if 'snapshot' != option:
-				if dic['snapshot'] and dic[option]:
-					raise click.UsageError('Invalid option combination --snapshot cannot be used with --%s' % option)
-					break
-
-		if dic['backup_id']:
-			if 'restore' != option:
-				if dic['backup_id'] and dic[option]:
-					raise click.UsageError('--backup-id cannot be used with --%s' % option)
-					break
-
-		if dic['size']:
-			if 'resize' != option:
-				if dic['size'] and dic[option]:
-					raise click.UsageError('--size cannot be used with --%s' % option)
-					break
-
-		if dic['image']:
-			if 'rebuild' != option:
-				if dic['image'] and dic[option]:
-					raise click.UsageError('--image cannot be used with --%s' % option)
-					break
-
-		if dic['name']:
-			if 'rename' != option:
-				if dic['name'] and dic[option]:
-					raise click.UsageError('--name cannot be used with --%s' % option)
-					break
-
-		if dic['kernel']:
-			if 'change_kernel' != option:
-				if dic['kernel'] and dic[option]:
-					raise click.UsageError('--kernel cannot be used with --%s' % option)
-					break
-
-		if dic['sname']:
-			if 'snapshot' != option:
-				if dic['sname'] and dic[option]:
-					raise click.UsageError('--sname cannot be used with --%s' % option)
-					break
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
 
 	if (dic['restore'] and not dic['backup_id']) or (dic['backup_id'] and not dic['restore']):
 		raise click.UsageError('--restore option requires --backup-id')
@@ -167,6 +38,7 @@ def validate(dic):
 
 	if (dic['snapshot'] and not dic['sname']) or (dic['sname'] and not dic['snapshot']):
 		raise click.UsageError('--snapshot option requires --sname')
+
 	return True
 
 
@@ -236,7 +108,11 @@ def droplet_actions(ctx, disable_backups, reboot, power_cycle, shutdown, power_o
 		and not ctx.params['snapshot'] and not ctx.params['sname']):
 		return click.echo(ctx.get_help())
 
-	if validate(ctx.params):
+	option_list = ['disable_backups', 'reboot', 'power_cycle', 'shutdown', 'power_off',
+	 'power_on', 'password_reset', 'ipv6', 'private_networking', 'upgrade', 'restore', 
+	 'resize', 'rebuild', 'rename', 'change_kernel', 'snapshot']
+
+	if validate(ctx.params, option_list):
 		if disable_backups:
 			params = {'type':'disable_backups'}
 			record = 'droplet disable backups'

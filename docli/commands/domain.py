@@ -13,21 +13,13 @@ def domain_group():
 	pass
 
 
-def validate(dic):
-	if dic['create'] and dic['getlist']:
-		raise click.UsageError('Invalid option combination --create cannot be used with --getlist')
-
-	if dic['create'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --create cannot be used with --detail')
-
-	if dic['create'] and dic['delete']:
-		raise click.UsageError('Invalid option combination --create cannot be used with --delete')
-
-	if dic['getlist'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --getlist cannot be used with --detail')
-
-	if dic['getlist'] and dic['delete']:
-		raise click.UsageError('Invalid option combination --getlist cannot be used with --delete')
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
 
 	if dic['getlist'] and dic['name']:
 		raise click.UsageError('Invalid option combination --getlist cannot be used with --name')
@@ -80,7 +72,9 @@ def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail, delet
 	if not ctx.params['getlist'] and not ctx.params['create'] and not ctx.params['name'] and not ctx.params['ip'] and not ctx.params['detail'] and not ctx.params['delete']:
 		return click.echo(ctx.get_help())
 
-	if validate(ctx.params):
+	option_list = ['getlist', 'create', 'detail', 'delete']
+
+	if validate(ctx.params, option_list):
 		if getlist:
 			method = 'GET'
 			url = DOMAIN_LIST

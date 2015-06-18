@@ -13,29 +13,20 @@ def image_actions_group():
 	pass
 
 
-def validate(dic):
-	option_list = ['transfer','convert','action']
-	for option in option_list:
-		if dic['transfer']:
-			if 'transfer' != option:
-				if dic['transfer'] and dic[option]:
-					raise click.UsageError('Invalid option combination --transfer cannot be used with --%s' % option)
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
 
-		if dic['convert']:
-			if 'convert' != option:
-				if dic['convert'] and dic[option]:
-					raise click.UsageError('Invalid option combination --convert cannot be used with --%s' % option)
+	if (dic['transfer'] and not dic['region']) or (dic['region'] and not dic['transfer']):
+		raise click.UsageError('--transfer option requires --region')
 
-		if dic['action']:
-			if 'action' != option:
-				if dic['action'] and dic[option]:
-					raise click.UsageError('Invalid option combination --action cannot be used with --%s' % option)
+	if (dic['action'] and not dic['action_id']) or (dic['action_id'] and not dic['action']):
+		raise click.UsageError('--action option requires --action-id')
 
-		if (dic['transfer'] and not dic['region']) or (dic['region'] and not dic['transfer']):
-			raise click.UsageError('--transfer option requires --region')
-
-		if (dic['action'] and not dic['action_id']) or (dic['action_id'] and not dic['action']):
-			raise click.UsageError('--action option requires --action-id')
 	return True
 
 
@@ -76,7 +67,9 @@ def image_actions(ctx, transfer, region, convert, action, action_id, token, tabl
 		and not ctx.params['action_id']):
 		return click.echo(ctx.get_help())
 
-	if validate(ctx.params):
+	option_list = ['transfer','convert','action']
+
+	if validate(ctx.params, option_list):
 		if transfer:
 			params = {"type":"transfer","region":region}
 			record = 'image transfer'

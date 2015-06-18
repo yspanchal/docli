@@ -13,6 +13,16 @@ def region_size_group():
 	pass
 
 
+def validate(dic, option_list):
+	for key in dic.viewkeys():
+		if key in option_list:
+			for option in option_list:
+				if option != key:
+					if dic[option] and dic[key]:
+						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+
+	return True
+
 @region_size_group.command(name='info', context_settings=CONTEXT_SETTINGS)
 @click.option('--region', '-r', is_flag=True, help='get list of available regions')
 @click.option('--size', '-s', is_flag=True, help='get list of available droplet sizes')
@@ -27,38 +37,41 @@ def ssh_keys(ctx, region, size, token, tablefmt, proxy):
 	if (not ctx.params['region'] and not ctx.params['size']):
 		return click.echo(ctx.get_help())
 
-	if region:
-		method = 'GET'
-		url = REGIONS
-		result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
-		if result['has_error']:
-			click.echo()
-			click.echo('Error: %s' %(result['error_message']))
-		else:
-			record = 'region list'
-			for dic in result['regions']:
-				headers = ['Fields', 'Values']
-				table = [['Name', dic['name']], ['Slug', dic['slug']], ['Available', dic['available']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-			total = 'Total regions: %d' % (result['meta']['total'])
-			click.echo(total)
+	option_list = ['region', 'size']
 
-	if size:
-		method = 'GET'
-		url = SIZES
-		result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
-		if result['has_error']:
-			click.echo()
-			click.echo('Error: %s' %(result['error_message']))
-		else:
-			record = 'size list'
-			for dic in result['sizes']:
-				headers = ['Fields', 'Values']
-				table = [['Slug', dic['slug']], ['Memory', dic['memory']], ['VCPUS', dic['vcpus']], 
-				['Disk', dic['disk']], ['Transfer', dic['transfer']], ['Price Monthly', dic['price_monthly']], 
-				['Price Hourly', dic['price_hourly']], ['Available', dic['available']]]
-				data = {'headers': headers, 'table_data': table}
-				print_table(tablefmt, data, record)
-			total = 'Total sizes: %d' % (result['meta']['total'])
-			click.echo(total)
+	if validate(ctx.params, option_list):
+		if region:
+			method = 'GET'
+			url = REGIONS
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'region list'
+				for dic in result['regions']:
+					headers = ['Fields', 'Values']
+					table = [['Name', dic['name']], ['Slug', dic['slug']], ['Available', dic['available']]]
+					data = {'headers': headers, 'table_data': table}
+					print_table(tablefmt, data, record)
+				total = 'Total regions: %d' % (result['meta']['total'])
+				click.echo(total)
+
+		if size:
+			method = 'GET'
+			url = SIZES
+			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
+			if result['has_error']:
+				click.echo()
+				click.echo('Error: %s' %(result['error_message']))
+			else:
+				record = 'size list'
+				for dic in result['sizes']:
+					headers = ['Fields', 'Values']
+					table = [['Slug', dic['slug']], ['Memory', dic['memory']], ['VCPUS', dic['vcpus']], 
+					['Disk', dic['disk']], ['Transfer', dic['transfer']], ['Price Monthly', dic['price_monthly']], 
+					['Price Hourly', dic['price_hourly']], ['Available', dic['available']]]
+					data = {'headers': headers, 'table_data': table}
+					print_table(tablefmt, data, record)
+				total = 'Total sizes: %d' % (result['meta']['total'])
+				click.echo(total)
