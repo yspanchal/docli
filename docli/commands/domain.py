@@ -19,25 +19,32 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
 	if dic['getlist'] and dic['name']:
-		raise click.UsageError('Invalid option combination --getlist cannot be used with --name')
+		raise click.UsageError('Invalid option combination --getlist cannot be \
+			used with --name')
 
 	if dic['getlist'] and dic['ip']:
-		raise click.UsageError('Invalid option combination --getlist cannot be used with --ip')
+		raise click.UsageError('Invalid option combination --getlist cannot be \
+			used with --ip')
 
 	if dic['name'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --name or -n cannot be used with --detail')
+		raise click.UsageError('Invalid option combination --name or -n cannot be \
+			used with --detail')
 
 	if dic['ip'] and dic['detail']:
-		raise click.UsageError('Invalid option combination --ip or -i cannot be used with --detail')
+		raise click.UsageError('Invalid option combination --ip or -i cannot be \
+			used with --detail')
 
 	if dic['name'] and dic['delete']:
-		raise click.UsageError('Invalid option combination --name or -n cannot be used with --delete')
+		raise click.UsageError('Invalid option combination --name or -n cannot be \
+			used with --delete')
 
 	if dic['ip'] and dic['delete']:
-		raise click.UsageError('Invalid option combination --ip or -i cannot be used with --delete')
+		raise click.UsageError('Invalid option combination --ip or -i cannot be \
+			used with --delete')
 
 	if dic['create'] and dic['ip'] and not dic['name']:
 		raise click.UsageError('--name or -n domain name missing')
@@ -69,7 +76,9 @@ def domain(ctx, token, tablefmt, proxy, getlist, create, name, ip, detail, delet
 	"""
 	Domains that you are managing through the DigitalOcean DNS interface.
 	"""
-	if not ctx.params['getlist'] and not ctx.params['create'] and not ctx.params['name'] and not ctx.params['ip'] and not ctx.params['detail'] and not ctx.params['delete']:
+	if (not ctx.params['getlist'] and not ctx.params['create'] 
+		and not ctx.params['name'] and not ctx.params['ip'] 
+		and not ctx.params['detail'] and not ctx.params['delete']):
 		return click.echo(ctx.get_help())
 
 	option_list = ['getlist', 'create', 'detail', 'delete']

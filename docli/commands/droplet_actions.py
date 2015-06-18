@@ -19,9 +19,11 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
-	if (dic['restore'] and not dic['backup_id']) or (dic['backup_id'] and not dic['restore']):
+	if (dic['restore'] and not dic['backup_id']) \
+		or (dic['backup_id'] and not dic['restore']):
 		raise click.UsageError('--restore option requires --backup-id')
 
 	if (dic['resize'] and not dic['size']) or (dic['size'] and not dic['resize']):
@@ -33,10 +35,12 @@ def validate(dic, option_list):
 	if (dic['rename'] and not dic['name']) or (dic['name'] and not dic['rename']):
 		raise click.UsageError('--rename option requires --name')
 
-	if (dic['change_kernel'] and not dic['kernel']) or (dic['kernel'] and not dic['change_kernel']):
+	if (dic['change_kernel'] and not dic['kernel']) \
+		or (dic['kernel'] and not dic['change_kernel']):
 		raise click.UsageError('--change-kernel option requires --kernel')
 
-	if (dic['snapshot'] and not dic['sname']) or (dic['sname'] and not dic['snapshot']):
+	if (dic['snapshot'] and not dic['sname']) \
+		or (dic['sname'] and not dic['snapshot']):
 		raise click.UsageError('--snapshot option requires --sname')
 
 	return True
@@ -51,7 +55,12 @@ def run_command(droplet_id, params, record, token, proxy, tablefmt):
 		click.echo('Error: %s' %(result['error_message']))
 	else:
 		headers = ['Fields', 'Values']
-		table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
+		table = [['Id', result['action']['id']], ['Status', result['action']['status']], 
+		['Type', result['action']['type']], ['Started at', result['action']['started_at']], 
+		['Completed at', result['action']['completed_at']], 
+		['Resource Id', result['action']['resource_id']], 
+		['Resource Type', result['action']['resource_type']], 
+		['Region', result['action']['region']]]
 		data = {'headers': headers, 'table_data': table}
 		print_table(tablefmt, data, record)
 		click.echo()

@@ -19,7 +19,8 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
 	if (dic['transfer'] and not dic['region']) or (dic['region'] and not dic['transfer']):
 		raise click.UsageError('--transfer option requires --region')
@@ -39,7 +40,12 @@ def run_command(token, proxy, image_id, params, record):
 		click.echo('Error: %s' %(result['error_message']))
 	else:
 		headers = ['Fields', 'Values']
-		table = [['Id', result['action']['id']], ['Status', result['action']['status']], ['Type', result['action']['type']], ['Started at', result['action']['started_at']], ['Completed at', result['action']['completed_at']], ['Resource Id', result['action']['resource_id']], ['Resource Type', result['action']['resource_type']], ['Region', result['action']['region']]]
+		table = [['Id', result['action']['id']], ['Status', result['action']['status']], 
+		['Type', result['action']['type']], ['Started at', result['action']['started_at']], 
+		['Completed at', result['action']['completed_at']], 
+		['Resource Id', result['action']['resource_id']], 
+		['Resource Type', result['action']['resource_type']], 
+		['Region', result['action']['region']]]
 		data = {'headers': headers, 'table_data': table}
 		cmd = 'Command: docli image-actions -a %d -i %d' % (image_id, result['action']['id'])
 		print_table(tablefmt, data, record)
@@ -91,6 +97,12 @@ def image_actions(ctx, transfer, region, convert, action, action_id, token, tabl
 				record = 'image action'
 				headers = ['Fields', 'Values']
 				dic = result['action']
-				table = [['Id', dic['id']], ['Status', dic['status']], ['Type', click.style(dic['type'], fg='blue')], ['Started at', dic['started_at']], ['Completed at', dic['completed_at']], ['Resource id', dic['resource_id']], ['Resource type', dic['resource_type']], ['Region', dic['region']]]
+				table = [['Id', dic['id']], ['Status', dic['status']], 
+				['Type', click.style(dic['type'], fg='blue')], 
+				['Started at', dic['started_at']], 
+				['Completed at', dic['completed_at']], 
+				['Resource id', dic['resource_id']], 
+				['Resource type', dic['resource_type']], 
+				['Region', dic['region']]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)

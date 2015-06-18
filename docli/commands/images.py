@@ -19,7 +19,8 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
 	if (dic['update'] and not dic['name']) or (dic['name'] and not dic['update']):
 		raise click.UsageError('--update option requires --name')

@@ -19,15 +19,18 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
 	if (dic['create'] and not dic['name'] and not dic['key'])\
 	or (dic['name'] and not dic['create'] and not dic['key'])\
 	or (dic['key'] and not dic['create'] and not dic['name']):
-		raise click.UsageError('Missing option, --create requires --name and --key option')
+		raise click.UsageError('Missing option, --create requires --name and \
+			--key option')
 
 	if (dic['update'] and not dic['name'] or not dic['key']):
-		raise click.UsageError('Missing option, --update requires --name or --key option')
+		raise click.UsageError('Missing option, --update requires --name or \
+			--key option')
 
 	return True
 
@@ -51,7 +54,8 @@ def invoke_list(token, proxy, page=1):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def ssh_keys(ctx, getlist, create, name, key, retrieve, update, delete, token, tablefmt, proxy):
+def ssh_keys(ctx, getlist, create, name, key, retrieve, update, delete, token, 
+			tablefmt, proxy):
 	"""
 	DigitalOcean allows you to add SSH public keys to the interface 
 	so that you can embed your public key into a Droplet at the time of creation.

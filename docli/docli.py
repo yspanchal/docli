@@ -15,7 +15,9 @@ from commands.base_request import CONTEXT_SETTINGS
 
 import os
 
-sources_list = [account_group, actions_group, domain_group, record_group, droplet_group, droplet_actions_group, images_group, image_actions_group, ssh_keys_group, region_size_group]
+sources_list = [account_group, actions_group, domain_group, record_group, 
+				droplet_group, droplet_actions_group, images_group, 
+				image_actions_group, ssh_keys_group, region_size_group]
 
 def config_file(file):
 	"""

@@ -2,7 +2,7 @@
 
 import click
 from urls import DROPLETS
-from base_request import DigitalOcean, print_table, CONTEXT_SETTINGS, validate
+from base_request import DigitalOcean, print_table, CONTEXT_SETTINGS
 
 
 @click.group()
@@ -19,15 +19,18 @@ def validate(dic, option_list):
 			for option in option_list:
 				if option != key:
 					if dic[option] and dic[key]:
-						raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, key))
+						raise click.UsageError('Invalid option combination --%s \
+							cannot be used with --%s' % (option, key))
 
-	create_list = ['name', 'region', 'size', 'image', 'sshkeys', 'backup', 'ipv6', 'private_networking', 'user_data']
+	create_list = ['name', 'region', 'size', 'image', 'sshkeys', 'backup', 'ipv6', 
+				'private_networking', 'user_data']
 
 	for option in option_list:
 		if option != 'create':
 			for create_option in create_list:
 				if dic[option] and dic[create_option]:
-					raise click.UsageError('Invalid option combination --%s cannot be used with --%s' % (option, create_option))
+					raise click.UsageError('Invalid option combination --%s \
+						cannot be used with --%s' % (option, create_option))
 
 	if dic['create'] and (not dic['name'] or not dic['region'] or not dic['size'] or not dic['image']):
 		raise click.UsageError('name, region, size and image option is required for --create')
@@ -71,7 +74,15 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 	"""
 	A Droplet is a DigitalOcean virtual machine. you can list, create, or delete Droplets.
 	"""
-	if (not ctx.params['create'] and not ctx.params['getlist'] and not ctx.params['retrieve'] and not ctx.params['kernel'] and not ctx.params['snapshot'] and not ctx.params['listbackup'] and not ctx.params['action'] and not ctx.params['delete'] and not ctx.params['name'] and not ctx.params['region'] and not ctx.params['size'] and not ctx.params['image'] and not ctx.params['sshkeys'] and not ctx.params['backup'] and not ctx.params['ipv6'] and not ctx.params['private_networking'] and not ctx.params['user_data']):
+	if (not ctx.params['create'] and not ctx.params['getlist'] 
+		and not ctx.params['retrieve'] and not ctx.params['kernel'] 
+		and not ctx.params['snapshot'] and not ctx.params['listbackup'] 
+		and not ctx.params['action'] and not ctx.params['delete'] 
+		and not ctx.params['name'] and not ctx.params['region'] 
+		and not ctx.params['size'] and not ctx.params['image'] 
+		and not ctx.params['sshkeys'] and not ctx.params['backup'] 
+		and not ctx.params['ipv6'] and not ctx.params['private_networking'] 
+		and not ctx.params['user_data']):
 		return click.echo(ctx.get_help())
 
 	option_list = ['create','getlist','retrieve','kernel','snapshot','listbackup','action','delete']
@@ -80,7 +91,9 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 		if create:
 			method = 'POST'
 			url = DROPLETS
-			params = {'name': name, 'region': region, 'size': size, 'image': image, 'ssh_keys': sshkeys, 'backups': backup, 'ipv6': ipv6, 'private_networking': private_networking, 'user_data': user_data}
+			params = {'name': name, 'region': region, 'size': size, 'image': image, 
+					'ssh_keys': sshkeys, 'backups': backup, 'ipv6': ipv6, 
+					'private_networking': private_networking, 'user_data': user_data}
 			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
 			if result['has_error']:
 				click.echo()
@@ -91,7 +104,19 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 				click.echo("Creating Your Droplet ", name)
 				click.echo()
 				headers = ['Fields', 'Values']
-				table = [['Id', result['droplet']['id']], ['Name', result['droplet']['name']], ['Memory', result['droplet']['memory']], ['Vcpus', result['droplet']['vcpus']], ['Disk', result['droplet']['disk']], ['Locked', result['droplet']['locked']], ['Status', result['droplet']['status']], ['Kernal Id', result['droplet']['kernel']['id']], ['Kernel Name', result['droplet']['kernel']['name']], ['Kernel Version', result['droplet']['kernel']['version']], ['Created At', result['droplet']['created_at']], ['Features', result['droplet']['features']], ['Backup Id', result['droplet']['backup_ids']], ['SnapShot Id', result['droplet']['snapshot_ids']], ['Network', result['droplet']['networks']], ['Region', result['droplet']['region']]]
+				table = [['Id', result['droplet']['id']], ['Name', result['droplet']['name']], 
+				['Memory', result['droplet']['memory']], ['Vcpus', result['droplet']['vcpus']], 
+				['Disk', result['droplet']['disk']], ['Locked', result['droplet']['locked']], 
+				['Status', result['droplet']['status']], 
+				['Kernal Id', result['droplet']['kernel']['id']], 
+				['Kernel Name', result['droplet']['kernel']['name']], 
+				['Kernel Version', result['droplet']['kernel']['version']], 
+				['Created At', result['droplet']['created_at']], 
+				['Features', result['droplet']['features']], 
+				['Backup Id', result['droplet']['backup_ids']], 
+				['SnapShot Id', result['droplet']['snapshot_ids']], 
+				['Network', result['droplet']['networks']], 
+				['Region', result['droplet']['region']]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)
 
@@ -123,7 +148,9 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 						else:
 							network_v6 = None
 
-						table = [['Id', droplet_id], ['Name', name], ['Memory', memory], ['Created At', created_at], ['Network V4', network_v4], ['Network V6', network_v6]]
+						table = [['Id', droplet_id], ['Name', name], 
+						['Memory', memory], ['Created At', created_at], 
+						['Network V4', network_v4], ['Network V6', network_v6]]
 						data = {'headers': headers, 'table_data': table}
 						print_table(tablefmt, data, record)
 					total = 'Total droplets: %d' % (result['meta']['total'])
@@ -174,7 +201,14 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 					network_v6 = None
 				region = result['droplet']['region']['name']
 				available = result['droplet']['region']['available']
-				table = [['Id', droplet_id],['Name', name],['Memory', memory],['Vcpus', vcpus],['Disk', disk],['Locked', locked],['Status', status],['Kernel Id', kernel_id],['Kernel Name', kernel_name],['Kernel Version', kernel_version],['Created At', created_at],['Features', features],['Backup Id', backup_ids],['SnapShot Id', snapshot_ids],['Network V4', network_v4],['Network V6', network_v6],['Region', region],['Available', available]]
+				table = [['Id', droplet_id],['Name', name],['Memory', memory],
+				['Vcpus', vcpus],['Disk', disk],['Locked', locked],
+				['Status', status],['Kernel Id', kernel_id],
+				['Kernel Name', kernel_name],['Kernel Version', kernel_version],
+				['Created At', created_at],['Features', features],
+				['Backup Id', backup_ids],['SnapShot Id', snapshot_ids],
+				['Network V4', network_v4],['Network V6', network_v6],
+				['Region', region],['Available', available]]
 				data = {'headers': headers, 'table_data': table}
 				print_table(tablefmt, data, record)
 
@@ -224,7 +258,11 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 					record = "droplet snapshot"
 					headers = ['Fields', 'Values']
 					for dic in result['snapshots']:
-						table = [['SnapShot Id', dic['id']], ['SnapShot Name', dic['name']], ['Distribution', dic['distribution']], ['Public', dic['public']], ['Regions', dic['regions']], ['Created At', dic['created_at']]]
+						table = [['SnapShot Id', dic['id']], 
+						['SnapShot Name', dic['name']], 
+						['Distribution', dic['distribution']], 
+						['Public', dic['public']], ['Regions', dic['regions']], 
+						['Created At', dic['created_at']]]
 						data = {'headers': headers, 'table_data': table}
 						print_table(tablefmt, data, record)
 					total = 'Total snapshots: %d' % (result['meta']['total'])
@@ -254,7 +292,11 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 					record = "droplet backup"
 					headers = ['Fields', 'Values']
 					for dic in result['backups']:
-						table = [['Backup Id', dic['id']], ['Backup Name', dic['name']], ['Distribution', dic['distribution']], ['Public', dic['public']], ['Regions', dic['regions']], ['Created At', dic['created_at']]]
+						table = [['Backup Id', dic['id']], 
+						['Backup Name', dic['name']], 
+						['Distribution', dic['distribution']], 
+						['Public', dic['public']], ['Regions', dic['regions']], 
+						['Created At', dic['created_at']]]
 						data = {'headers': headers, 'table_data': table}
 						print_table(tablefmt, data, record)
 					total = 'Total backups: %d' % (result['meta']['total'])
@@ -284,7 +326,9 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 					record = "droplet action"
 					headers = ['Fields', 'Values']
 					for dic in result['actions']:
-						table = [['Id', dic['id']], ['Status', dic['status']], ['Type', dic['type']], ['Started At', dic['started_at']], ['Completed At', dic['completed_at']]]
+						table = [['Id', dic['id']], ['Status', dic['status']], 
+						['Type', dic['type']], ['Started At', dic['started_at']], 
+						['Completed At', dic['completed_at']]]
 						data = {'headers': headers, 'table_data': table}
 						print_table(tablefmt, data, record)
 					total = 'Total actions: %d' % (result['meta']['total'])

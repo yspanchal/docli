@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 ACCOUNT_INFO = 'account/'
 ACTION_LIST = 'actions/'
 DOMAIN_LIST = 'domains/'
