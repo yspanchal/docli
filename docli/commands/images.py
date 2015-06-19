@@ -14,6 +14,9 @@ def images_group():
 
 
 def validate(dic, option_list):
+	"""
+	images command validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -29,6 +32,9 @@ def validate(dic, option_list):
 
 
 def invoke_list(token, proxy, url):
+	"""
+	invoke actual request
+	"""
 	method = 'GET'
 	url = url
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)
@@ -36,6 +42,9 @@ def invoke_list(token, proxy, url):
 
 
 def run_command(token, proxy, record, url, tablefmt):
+	"""
+	run request and process result
+	"""
 	page = 1
 	has_page = True
 	while has_page:
@@ -70,6 +79,9 @@ def run_command(token, proxy, record, url, tablefmt):
 
 
 def image_by_id_slug(token, proxy, record, url, tablefmt):
+	"""
+	get images by id or slug
+	"""
 	result = invoke_list(token, proxy, url)
 	if result['has_error']:
 		has_page = False

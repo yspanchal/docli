@@ -14,6 +14,9 @@ def droplet_actions_group():
 
 
 def validate(dic, option_list):
+	"""
+	droplet actions command validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -47,6 +50,9 @@ def validate(dic, option_list):
 
 
 def run_command(droplet_id, params, record, token, proxy, tablefmt):
+	"""
+	run command and process result
+	"""
 	method = 'POST'
 	url = DROPLETS + str(droplet_id) + '/actions'
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)

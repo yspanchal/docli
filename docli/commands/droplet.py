@@ -14,6 +14,9 @@ def droplet_group():
 
 
 def validate(dic, option_list):
+	"""
+	droplet command option validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -42,6 +45,9 @@ def validate(dic, option_list):
 
 
 def invoke_list(token, proxy, url):
+	"""
+	invoke actual request
+	"""
 	method = 'GET'
 	url = url
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)

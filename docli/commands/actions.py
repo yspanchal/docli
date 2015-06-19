@@ -14,6 +14,9 @@ def actions_group():
 
 
 def validate(dic, option_list):
+	"""
+	actions command option validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -26,6 +29,9 @@ def validate(dic, option_list):
 
 
 def invoke_list(token, proxy, page=1):
+	"""
+	invoke actual request
+	"""
 	method = 'GET'
 	url = ACTION_LIST + '?page=%d' % (page)
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)

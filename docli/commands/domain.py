@@ -14,6 +14,9 @@ def domain_group():
 
 
 def validate(dic, option_list):
+	"""
+	domain command option validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:

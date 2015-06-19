@@ -14,6 +14,9 @@ def ssh_keys_group():
 
 
 def validate(dic, option_list):
+	"""
+	ssh key command validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -36,6 +39,9 @@ def validate(dic, option_list):
 
 
 def invoke_list(token, proxy, page=1):
+	"""
+	invoke actual request
+	"""
 	method = 'GET'
 	url = KEYS
 	result = DigitalOcean.do_request(method, url, token=token, proxy=proxy)

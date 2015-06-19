@@ -14,6 +14,9 @@ def region_size_group():
 
 
 def validate(dic, option_list):
+	"""
+	region and size command validation
+	"""
 	for key in dic.viewkeys():
 		if key in option_list:
 			for option in option_list:
@@ -31,7 +34,7 @@ def validate(dic, option_list):
 @click.option('--tablefmt', '-f', type=click.Choice(['fancy_grid', 'simple', 'plain', 'grid', 'pipe', 'orgtbl', 'psql', 'rst', 'mediawiki', 'html', 'latex', 'latex_booktabs', 'tsv']), help='output table format', default='fancy_grid', metavar='<format>')
 @click.option('--proxy', '-p', help='proxy url to be used for this call', metavar='<http://ip:port>')
 @click.pass_context
-def ssh_keys(ctx, region, size, token, tablefmt, proxy):
+def region_size(ctx, region, size, token, tablefmt, proxy):
 	"""
 	Get list of regions and droplet sizes available with Digital Ocean
 	"""
