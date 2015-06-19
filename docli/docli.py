@@ -33,6 +33,7 @@ def config_file(file):
 
 @click.command(cls=click.CommandCollection, sources=sources_list, context_settings=CONTEXT_SETTINGS, invoke_without_command=True, no_args_is_help=True)
 @click.option('-c', '--configure', is_flag=True, help='configure digital ocean access token')
+@click.version_option(version=1.0, message=('Digital Ocean command line interface. \n%(prog)s, version %(version)s, by Yogesh panchal, yspanchal@gmail.com'))
 def docli(configure):
 	"""
 	'docli' is Digital Ocean command line interfaces
