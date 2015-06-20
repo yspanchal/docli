@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Docli by Yogesh Panchal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Docli</h1>
+      <h2 class="project-tagline">Digital Ocean Command Line Interface</h2>
+      <a href="https://github.com/yspanchal/docli" class="btn">View on GitHub</a>
+      <a href="https://github.com/yspanchal/docli/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/yspanchal/docli/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      
+<h3>
+<a id="welcome-to-github-pages" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a><b>Digital Ocean Command Line Interface.</b></h3>
+
+<p>Docli is Digital Ocean command line interface written in <a href="http://click.pocoo.org/4/">Click</a>, Using docli you can create, update and delete droplets and various actions on droplets like resize, rename, backup, snapshot etc.</p>
+
+<h3>
+<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install:</h3>
+
+
+<pre>
+  <code>
+    $ git clone https://github.com/yspanchal/docli.git
+    $ cd docli/
+    $ python setup.py install
+  </code>
+</pre>
+
+<p>or</p>
+
+<pre>
+  <code>
+    pip install docli
+  </code>
+</pre>
+
+<h3>
+  <a id="designer-templates" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage:
+</h3>
+
+<p>Obtain access token from digital ocean</p>
+<p><a href="https://goo.gl/hPkQG7">Digital Ocean Access Token Click Here</a></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configure Docli</h4>
+
+<p><code>docli --configure</code></p>
+<p>Enter digital ocean access token and press enter.</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Help</h4>
+
+<p><code>docli --help</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get Account Info</h4>
+
+<p><code>docli account</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of actions or events that have occurred on the resources</h4>
+
+<p><code>docli action -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retrieve a specific action object</h4>
+
+<p><code>docli action -r 3010215</code></p>
+<p>
+  <code>
+    <pre>
+      Where,
+      -r is action id to be retrieved (Required)
+    </pre>
+  </code>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of all domain configured with Digital Ocean</h4>
+
+<p><code>docli domain -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create new domain name record</h4>
+
+<p><code>docli domain -c -n example.com -i 101.101.101.101</code></p>
+<p>
+  <pre>
+    <code>
+      Where,
+      -c is create new domain name entry (Required)
+      -n is name of domain name (Required)
+      -i ip address for domain name (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get details of existing domain name</h4>
+
+<p><code>docli domain -d 3010215</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -d is domain id to get details (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete existing domain name</h4>
+
+<p><code>docli domain -r 3010215</code></p>
+<p>
+  <pre>
+    <code>
+      Where,
+      -r is domain id to be deleted (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create new droplet</h4>
+
+<p><code>docli droplet -n example-server -s 1gb -r nyc1 -i ubuntu-14-04-x64 -S 10201 -b False -I True -P False -u 'apt-get update'</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -n is name of droplet to be created (Required)
+      -s is size of droplet to be created (Required)
+      -r is region in which droplet to be created (Required)
+      -i is image slug used to created droplet (Required)
+      -S is sshkey id to be included (Optional)
+      -b is boolean automated backups should be enabled (Optional)
+      -I is boolean ipv6 should be enabled (Optional)
+      -u is user data for droplet (Optional)
+      -P is boolean private networking should be enabled (Optional)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get details of specific droplet</h4>
+
+<p><code>docli droplet -R 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -R is droplet id to get details (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of all droplets</h4>
+
+<p><code>docli droplet -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of available kernels for droplet</h4>
+
+<p><code>docli droplet -k 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -k is droplet id to get kernels (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of available snapshots for droplet</h4>
+
+<p><code>docli droplet -C 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -C is droplet id to get snapshots (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of available backups for droplet</h4>
+
+<p><code>docli droplet -B 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -B is droplet id to get backups (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of actions for droplet</h4>
+
+<p><code>docli droplet -a 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -a is droplet id to get actions (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Disable backup for droplet</h4>
+
+<p><code>docli droplet-actions -d 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -d is droplet id to disable backups (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reboot a droplet</h4>
+
+<p><code>docli droplet-actions -r 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -r is droplet id to be rebooted (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Power cycle a droplet</h4>
+
+<p><code>docli droplet-actions -P 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where, power cycle is power off and then back on
+      -P is droplet id to be power cycle (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Shutdown a droplet</h4>
+
+<p><code>docli droplet-actions -s 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -s is droplet id to be shutdown (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Power-Off a droplet</h4>
+
+<p><code>docli droplet-actions -O 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -O is droplet id to be power-off (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Power-On a droplet</h4>
+
+<p><code>docli droplet-actions -o 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -o is droplet id to be power-on (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Password reset droplet</h4>
+
+<p><code>docli droplet-actions -w 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -w is droplet id to be password reset (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enable ipv6 for droplet</h4>
+
+<p><code>docli droplet-actions -v 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -v is droplet id to enable ipv6 (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Enable private networking for droplet</h4>
+
+<p><code>docli droplet-actions -n 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -n is droplet id to enable private networking (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Upgrade droplet</h4>
+
+<p><code>docli droplet-actions -u 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -u is droplet id to be upgraded (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Restore droplet from given image</h4>
+
+<p><code>docli droplet-actions -R 30102012 -b 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -R is droplet id to be restored (Required)
+      -b is backup id from which droplet restored (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resize droplet</h4>
+
+<p><code>docli droplet-actions -z 30102012 -S 2gb</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -z is droplet id to be resized (Required)
+      -S is size (Required)
+    </code>
+  </pre>
+</p>
+
+
+<h3>
+<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/yspanchal/docli">Docli</a> is maintained by <a href="https://github.com/yspanchal">yspanchal</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
