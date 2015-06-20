@@ -134,6 +134,65 @@
 </p>
 
 <h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of all domain records </h4>
+
+<p><code>docli record -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create new record for domain name </h4>
+
+<p><code>docli record -c mydomain.com -y CNAME -n xyz.mydomain.com -w 101.101.101.101</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -c is domain name for which record to be created (Required)
+      -y is type of record A, CNAME, MX (Required)
+      -n is host name, alias, or service being defined by the record (Required)
+      -w is variable data depending on record type (Required)
+      -x is priority of the host (for SRV and MX records. null otherwise) (Optional)
+      -P is port that the service is accessible on (for SRV records only. null otherwise) (Optional)
+      -g The weight of records with the same priority (for SRV records only. null otherwise) (Optional)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update existing record for domain name </h4>
+
+<p><code>docli record -u mydomain.com -n xyz.mydomain.com -w 101.101.101.101</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -u is domain name for which record to be updated (Required)
+      -y is type of record A, CNAME, MX (Optional)
+      -n is host name, alias, or service being defined by the record (Optional)
+      -w is variable data depending on record type (Optional)
+      -x is priority of the host (for SRV and MX records. null otherwise) (Optional)
+      -P is port that the service is accessible on (for SRV records only. null otherwise) (Optional)
+      -g The weight of records with the same priority (for SRV records only. null otherwise) (Optional)
+    </code>
+  </pre>
+</p>
+
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete existing record for domain name </h4>
+
+<p><code>docli record -r mydomain.com -i 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -r is domain name for which record to be deleted (Required)
+      -i is record id to be deleted (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
 <a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create new droplet</h4>
 
 <p><code>docli droplet -n example-server -s 1gb -r nyc1 -i ubuntu-14-04-x64 -S 10201 -b False -I True -P False -u 'apt-get update'</code></p>
@@ -400,9 +459,275 @@
   </pre>
 </p>
 
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rebuild droplet</h4>
 
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<p><code>docli droplet-actions -B 30102012 -i 1214392 or ubuntu-14-04-x64</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -B is droplet id to be rebuild (Required)
+      -i is image id or image slug from which droplet is rebuild (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rename droplet</h4>
+
+<p><code>docli droplet-actions -m 30102012 -N My-server</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -m is droplet id to be rename (Required)
+      -N is new name for droplet (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Change kernel of droplet</h4>
+
+<p><code>docli droplet-actions -c 30102012 -k 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -c is droplet id for which kernel to be changed (Required)
+      -k is new kernel id for droplet (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create snapshot for droplet</h4>
+
+<p><code>docli droplet-actions -a 30102012 -A my-server-snapshot</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -a is create snaphot of given droplet id (Required)
+      -A is name of snapshot to be created (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transfer image from one region to another region</h4>
+
+<p><code>docli image-actions -T 30102012 -r nyc3</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -T is image id to be transfered (Required)
+      -r is region where image to be transfered (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convert backup image to snapshot image</h4>
+
+<p><code>docli image-actions -c 30102012</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -c is image id to be convert (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get details of action or event executed on image</h4>
+
+<p><code>docli image-actions -a 30102012 -i 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -a is image id (Required)
+      -i is action id (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of all images</h4>
+
+<p><code>docli images -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of distribution images</h4>
+
+<p><code>docli images -d</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of application images</h4>
+
+<p><code>docli images -a</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of user's private images</h4>
+
+<p><code>docli images -p</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get image details using image id</h4>
+
+<p><code>docli images -I 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -I is image id (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get image details using image slug</h4>
+
+<p><code>docli images -S my-fancy-image</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -S is image slug (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get all actions that have been executed on an image</h4>
+
+<p><code>docli images -A 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -A is image id (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update image name</h4>
+
+<p><code>docli images -u 3812352 -n New-Image-Name</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -u is image id to be updated (Required)
+      -n is new image name (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete image </h4>
+
+<p><code>docli images -D 3812352</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -D is image id to be deleted (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get list of all ssh keys </h4>
+
+<p><code>docli ssh-key -l</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add new ssh key </h4>
+
+<p><code>docli ssh-key -c -n my-office-key -k ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCcs8EG24p2hy....</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -c is add new ssh key (Required)
+      -n is name of ssh key (Required)
+      -k is public ssh key string (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get details of existing ssh key </h4>
+
+<p><code>docli ssh-key -r 3020321</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -r is id of ssh key (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update ssh key </h4>
+
+<p><code>docli ssh-key -u 3020321 -n my-office-key -k ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCcs8EG24p2hy....</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -u is id of ssh key to be updated (Required)
+      -n is name of ssh key (Optional)
+      -k is public ssh key string (Optional)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete existing ssh key </h4>
+
+<p><code>docli ssh-key -d 3020321</code></p>
+
+<p>
+  <pre>
+    <code>
+      Where,
+      -d is id of ssh key to be deleted (Required)
+    </code>
+  </pre>
+</p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get available regions list </h4>
+
+<p><code>docli info -r</code></p>
+
+<h4>
+<a id="rather-drive-stick" class="anchor" href="" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get available droplet sizes list </h4>
+
+<p><code>docli info -s</code></p>
 
 <p>Having trouble with Pages? Check out the documentation at <a href="https://help.github.com/pages">https://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
 
