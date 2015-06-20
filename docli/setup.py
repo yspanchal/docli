@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+
+from setuptools import setup, find_packages
+
+try:
+    long_description = open('README.rst', 'rt').read()
+except IOError:
+    long_description = ''
+
+setup(
+    name='docli',
+    version='1.0',
+
+    description='Digital Ocean command line interface',
+    long_description=long_descriptionm,
+
+    author='Yogesh Panchal',
+    author_email='yspanchal@gmail.com',
+
+    url='https://github.com/yspanchal/docli',
+    download_url='https://github.com/yspanchal/docli/tarball/master',
+
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=[
+        'Click',
+        'requests',
+        'tabulate',
+    ],
+    entry_points='''
+        [console_scripts]
+        docli=docli:docli
+    ''',
+    classifiers=[
+        'License :: OSI Approved :: Apache License',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+    ],
+)
