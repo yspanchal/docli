@@ -64,7 +64,7 @@ def invoke_list(token, proxy, url):
 @click.option('--action', '-a', type=int, help='List all actions for a droplet', metavar='<3812352>')
 @click.option('--delete', '-d', type=int, help='Delete a droplet', metavar='<3812352>')
 @click.option('--name', '-n', type=str, help='The human-readable string used when displaying the Droplet name.', metavar='<example.com>')
-@click.option('--region', '-r', type=str, help='The region that you wish to deploy in.', metavar='<nyc1>')
+@click.option('--region', '-r', type=click.Choice(['nyc1', 'nyc2', 'nyc3', 'ams1', 'ams2', 'ams3', 'sfo1', 'sgp1', 'lon1', 'fra1']), help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=click.Choice(['512mb', '1gb', '2gb', '4gb', '8gb', '16gb', '32gb', '48gb', '64gb']), help='The size that you wish to select for this Droplet.', metavar='<1gb>')
 @click.option('--image', '-i', type=str, help='The image ID of a public or private image.', metavar='<ubuntu-14-04-x64>')
 @click.option('--sshkeys', '-S', type=str, help='Comma seperated IDs of the SSH keys to embed in the Droplet', nargs=10, metavar='<home, office>')
