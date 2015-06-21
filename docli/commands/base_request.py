@@ -9,7 +9,12 @@ import ConfigParser
 import click
 from tabulate import tabulate
 
-requests.packages.urllib3.disable_warnings()
+try:
+	requests.packages.urllib3.disable_warnings()
+except:
+	requests_log = logging.getLogger("requests")
+	requests_log.setLevel(logging.CRITICAL)
+
 
 class DigitalOcean(object):
 	"""
