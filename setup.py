@@ -29,11 +29,10 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        docli=docli:docli
+        docli=docli.main:docli
     ''',
-    classifiers=[
-        'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-    ],
+#    classifiers=[
+#        'License :: OSI Approved :: Apache Software License',
+#        'Programming Language :: Python',
+#    ],
 )
