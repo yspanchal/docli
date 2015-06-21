@@ -12,7 +12,7 @@ setup(
     version='1.0',
 
     description='Digital Ocean command line interface',
-    long_description=long_descriptionm,
+    long_description=long_description,
 
     author='Yogesh Panchal',
     author_email='yspanchal@gmail.com',
