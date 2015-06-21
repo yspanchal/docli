@@ -36,7 +36,7 @@ ex: docli droplet --help
 Example Commands
 ----------------
 
-https://github.com/yspanchal/docli/wiki/Example-Commands
+http://yspanchal.github.io/docli/
 
 
 http://pythonhosted.org/docli
