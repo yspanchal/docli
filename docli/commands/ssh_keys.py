@@ -31,7 +31,7 @@ def validate(dic, option_list):
 		raise click.UsageError('Missing option, --create requires --name and \
 			--key option')
 
-	if (dic['update'] and not dic['name'] or not dic['key']):
+	if (dic['update'] and (not dic['name'] or not dic['key'])):
 		raise click.UsageError('Missing option, --update requires --name or \
 			--key option')
 

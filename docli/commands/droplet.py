@@ -67,7 +67,7 @@ def invoke_list(token, proxy, url):
 @click.option('--region', '-r', type=click.Choice(['nyc1', 'nyc2', 'nyc3', 'ams1', 'ams2', 'ams3', 'sfo1', 'sgp1', 'lon1', 'fra1']), help='The region that you wish to deploy in.', metavar='<nyc1>')
 @click.option('--size', '-s', type=click.Choice(['512mb', '1gb', '2gb', '4gb', '8gb', '16gb', '32gb', '48gb', '64gb']), help='The size that you wish to select for this Droplet.', metavar='<1gb>')
 @click.option('--image', '-i', type=str, help='The image ID of a public or private image.', metavar='<ubuntu-14-04-x64>')
-@click.option('--sshkeys', '-S', type=str, help='Comma seperated IDs of the SSH keys to embed in the Droplet', nargs=10, metavar='<home, office>')
+@click.option('--sshkeys', '-S', type=str, help='Comma seperated IDs of the SSH keys to embed in the Droplet', nargs=1, metavar='<home, office>')
 @click.option('--backup', '-b', is_flag=True, help='A boolean indicating whether automated backups should be enabled.', default=False)
 @click.option('--ipv6', '-I', is_flag=True, help='A boolean indicating whether IPv6 is enabled.', default=False)
 @click.option('--private_networking', '-P', is_flag=True, help='A boolean indicating whether private networking is enabled.', default=False)
@@ -97,8 +97,10 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 		if create:
 			method = 'POST'
 			url = DROPLETS
+                        sshkeys = sshkeys.split(",")
+                        print(sshkeys)
 			params = {'name': name, 'region': region, 'size': size, 'image': image, 
-					'ssh_keys': sshkeys, 'backups': backup, 'ipv6': ipv6, 
+					'ssh_keys[]': sshkeys, 'backups': backup, 'ipv6': ipv6, 
 					'private_networking': private_networking, 'user_data': user_data}
 			result = DigitalOcean.do_request(method, url, token=token, proxy=proxy, params=params)
 			if result['has_error']:
@@ -107,20 +109,15 @@ def droplet(ctx, create, getlist, retrieve, kernel, snapshot, listbackup, action
 			else:
 				record = 'droplet create'
 				click.echo()
-				click.echo("Creating Your Droplet ", name)
+				msg = "Creating Your Droplet ".format(name.encode("ascii", "ignore"))
+				click.echo(msg)
 				click.echo()
 				headers = ['Fields', 'Values']
 				table = [['Id', result['droplet']['id']], ['Name', result['droplet']['name']], 
 				['Memory', result['droplet']['memory']], ['Vcpus', result['droplet']['vcpus']], 
 				['Disk', result['droplet']['disk']], ['Locked', result['droplet']['locked']], 
 				['Status', result['droplet']['status']], 
-				['Kernal Id', result['droplet']['kernel']['id']], 
-				['Kernel Name', result['droplet']['kernel']['name']], 
-				['Kernel Version', result['droplet']['kernel']['version']], 
 				['Created At', result['droplet']['created_at']], 
-				['Features', result['droplet']['features']], 
-				['Backup Id', result['droplet']['backup_ids']], 
-				['SnapShot Id', result['droplet']['snapshot_ids']], 
 				['Network', result['droplet']['networks']], 
 				['Region', result['droplet']['region']]]
 				data = {'headers': headers, 'table_data': table}
